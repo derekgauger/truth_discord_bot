@@ -1,10 +1,11 @@
 import DiscordJS, { Intents } from 'discord.js'
 import dotenv from 'dotenv'
 import { createRequire } from "module";
+// import schedule from "node-cron"
 const require = createRequire(import.meta.url);
 
 const data = require("./holidays.json");
-
+const cron = require('node-cron')
 let message_channel = null
 
 // import { GOOGLE_IMG_SCRAP , GOOGLE_QUERY } from 'google-img-scrap'
@@ -36,7 +37,9 @@ const client = new DiscordJS.Client({
 
 client.on('ready', () => {
     console.log("The Truth will be told...")
-    
+    const job = cron.schedule("0 1 0 * * *", function () {
+        display_holidays()
+    });
 })
 
 client.on('messageCreate', (message) => {
