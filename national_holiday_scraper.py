@@ -1,21 +1,22 @@
 """
 This script is used for the 'Truth Discord Bot'. It gathers all the fun national days from the website
-'https://nationaldaycalendar.com/' and puts them in a spreadsheet.
+'https://nationaldaycalendar.com/' and puts them in a JSON file.
 
-In the Truth bot Javascript code, it will read the xlsx file and print all current national days on Discord
+In the Truth bot Javascript code, it will read the JSON file and print all current national days on Discord
 for everyone to see.
 
-Pip libraries needed: requests, openpyxl
+Pip libraries needed: requests
 """
 
 
 import requests
 import re
 import html
-from openpyxl import Workbook
+import unicodedata
+import json
 
 months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-
+# months = ["January"]
 
 # Get the HTML and puts it into a text file
 def get_webpage(month):
@@ -50,46 +51,26 @@ def get_holidays(month):
     for match in matches:
         day = match[0]
         holiday = match[1]
-        if day in holidays:
-            holidays[day].append(holiday)
-        else:
-            holidays[day] = [holiday]
+        holiday = html.unescape(holiday)
+        holiday = unicodedata.normalize('NFKD', holiday).encode('ascii', 'ignore').decode()
+        if len(holiday) > 3:
+            if day in holidays:
+                holidays[day].append(holiday)
+            else:
+                holidays[day] = [holiday]
 
     return holidays
 
 
-# Method for creating a worksheet
-def create_worksheet(wb, month):
-    ws = wb.create_sheet(month)
-
-
-# Method for creating the xlsx file from scratch
-def create_xlsx_file(wb):
-    for month in months:
-        create_worksheet(wb, month)
-
-    del wb['Sheet']
-
-
 # main
 def main():
-    wb = Workbook()
-
-    create_xlsx_file(wb)
-
+    dict = {}
     for month in months:
-        ws = wb.get_sheet_by_name(month)
         holidays = get_holidays(month)
-        for day in holidays:
-            i = 0
-            for holiday in holidays[day]:
-                holiday = html.unescape(holiday)
+        dict[month] = holidays
 
-                if len(holiday) > 3:
-                    ws.cell(row=int(day), column=i + 1).value = holiday
-                    i += 1
-
-    wb.save('ze_holidays.xlsx')
-
+    with open("holidays.json", "w") as f:
+        json_object = json.dumps(dict, indent=4)
+        f.write(json_object)        
 
 main()
