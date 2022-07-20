@@ -1,13 +1,13 @@
 import DiscordJS, { Intents } from 'discord.js'
 import dotenv from 'dotenv'
 import { createRequire } from "module";
-// import schedule from "node-cron"
 const require = createRequire(import.meta.url);
 
 const data = require("./holidays.json");
 const cron = require('node-cron')
 let message_channel = null
 
+// Ignore this code for now. It will be used later in the project.
 // import { GOOGLE_IMG_SCRAP , GOOGLE_QUERY } from 'google-img-scrap'
 // import Jimp from 'jimp'
 
