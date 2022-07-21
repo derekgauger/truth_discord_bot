@@ -1,5 +1,5 @@
-import DiscordJS, { Intents } from 'discord.js'
-import dotenv from 'dotenv'
+import  { Client, GatewayIntentBits, EmbedBuilder } from 'discord.js'
+require('dotenv').config()
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 
@@ -21,16 +21,14 @@ let message_channel = null
 //     let images = test.result
 //     console.log(images)
 // })();
-
-dotenv.config()
 const prefix = '$'
 
-const client = new DiscordJS.Client({
+const client = new Client({
     intents: [
-        Intents.FLAGS.GUILDS,
-        Intents.FLAGS.GUILD_MESSAGES,
-        Intents.FLAGS.GUILD_MEMBERS,
-        Intents.FLAGS.GUILD_PRESENCES,
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.Guild_Messages,
+        GatewayIntentBits.Guild_Members,
+        GatewayIntentBits.Guild_Presences,
     ]
 })
 
@@ -88,7 +86,7 @@ function display_holidays() {
     })
 
     const embed = {
-        color: 0xFF0000,
+        color: 'Red',
         title: 'National Holidays',
         url: 'https://nationaldaycalendar.com/',
         author: {
