@@ -1,0 +1,28 @@
+{
+  "name": "truth_discord_bot",
+  "version": "1.0.0",
+  "main": "truth.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/derekgauger/truth_discord_bot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/derekgauger/truth_discord_bot/issues"
+  },
+  "homepage": "https://github.com/derekgauger/truth_discord_bot#readme",
+  "dependencies": {
+    "discord.js": "^13.9.2",
+    "dotenv": "^16.0.1",
+    "google-img-scrap": "^1.0.7",
+    "jimp": "^0.16.0",
+    "node-cron": "^3.0.1",
+    "uuid": "^8.3.2"
+  },
+  "description": ""
+}
