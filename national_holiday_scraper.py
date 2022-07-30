@@ -53,7 +53,7 @@ def get_holidays(month):
         holiday = match[1]
         holiday = html.unescape(holiday)
         holiday = unicodedata.normalize('NFKD', holiday).encode('ascii', 'ignore').decode()
-        if len(holiday) > 3:
+        if 80 > len(holiday) > 3:
             if day in holidays:
                 holidays[day].append(holiday)
             else:

@@ -5,9 +5,11 @@ const require = createRequire(import.meta.url);
 
 const data = require("./holidays.json");
 const cron = require('node-cron')
-let message_channel = null
+let servers = require("./channels.json")
+let fs = require('fs')
 
 // Ignore this code for now. It will be used later in the project.
+
 // import { GOOGLE_IMG_SCRAP , GOOGLE_QUERY } from 'google-img-scrap'
 // import Jimp from 'jimp'
 
@@ -52,24 +54,36 @@ client.on('messageCreate', (message) => {
     console.log(message.author.username + " executed the command: '" + command + "'")
 
     if (command == 'setchannel') {
-        message_channel = message.channel
-        message_channel.send("Display Message Channel Set")
+        servers[message.guild.id] = message.channel.id
+        message.channel.send("Display Message Channel Set")
+        var json = JSON.stringify(servers)
+        fs.writeFile('channels.json', json, 'utf-8', (err) => {
+            if (err) throw err
+        })
     }
 
     if (command == 'display') {
-        display_holidays()
+        
+        display_holidays_in_channel(message.channel)
     }
 })
 
 
 function display_holidays() {
+    for (let server in servers) {
+        let channelId = servers[server]
+
+        let channel = client.guilds.cache.get(server).channels.cache.get(channelId)
+        
+        display_holidays_in_channel(channel)
+
+    }
+}
+
+
+function display_holidays_in_channel(channel) {
 
     const today = new Date()
-
-    if (message_channel == null) {
-        console.log("Invalid Channel: Must $setchannel before")
-        return
-    }
 
     const dd = String(today.getDate()).padStart(2, '0')
     const mm = String(today.getMonth() + 1).padStart(2, '0')
@@ -112,8 +126,13 @@ function display_holidays() {
         },
     };
 
-    message_channel.send({ embeds: [embed] });
+    channel.send({ embeds: [embed] });
 
+}
+
+
+function print(value) {
+    console.log(value)
 }
 
 client.login(process.env.TOKEN)

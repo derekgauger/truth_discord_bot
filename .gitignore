@@ -131,3 +131,4 @@ dist
 
 # Added by Derek
 *.txt
+channels.json
