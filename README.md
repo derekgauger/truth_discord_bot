@@ -1,6 +1,7 @@
 'Truth' is a Discord bot that displays the national days and will soon display the national months.
 
 **Why did I make this?**
+
 Have you ever been minding your own business throughout the day and learned it's National Donut Day. Then you wonder, how are people knowing this type of thing or how can I keep up with the national days? Well here is the answer...
 
 **Add to Server**
