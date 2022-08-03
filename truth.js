@@ -3,26 +3,12 @@ import dotenv from 'dotenv'
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 
-const data = require("./holidays.json");
+const nationalDays = require("./national_days.json");
+const nationalMonths = require("./national_months.json");
+
 const cron = require('node-cron')
 let servers = require("./channels.json")
 let fs = require('fs')
-
-// Ignore this code for now. It will be used later in the project.
-
-// import { GOOGLE_IMG_SCRAP , GOOGLE_QUERY } from 'google-img-scrap'
-// import Jimp from 'jimp'
-
-// (async function(){
-//     const test = await GOOGLE_IMG_SCRAP({
-//         search: "nature",
-//         execute: function(element){
-//             if(!element.url.match('gstatic.com')) return element;
-//         }
-//     });
-//     let images = test.result
-//     console.log(images)
-// })();
 
 dotenv.config()
 const prefix = '$'
@@ -39,8 +25,18 @@ const client = new DiscordJS.Client({
 
 client.on('ready', () => {
     console.log("The Truth will be told...")
-    const job = cron.schedule("0 1 0 * * *", function () {
-        display_holidays()
+
+    client.user.setPresence({
+        game: { name: '$info' },
+        status: 'online'
+    })
+
+    const dayJob = cron.schedule("0 1 0 * * *", function () {
+        display_days()
+    });
+
+    const monthJob = cron.schedule("0 1 0 1 * *", function () {
+        display_months()
     });
 })
 
@@ -62,28 +58,71 @@ client.on('messageCreate', (message) => {
         })
     }
 
-    if (command == 'display') {
+    if (command == 'displayday') {
+        let channelId = servers[message.guild.id]
+        if (channelId == undefined) {
+            message.channel.send("You must set the display channel using '$setchannel' before using that command.")
+            return
+        }
         
-        display_holidays_in_channel(message.channel)
+        let channel = client.guilds.cache.get(message.guild.id).channels.cache.get(channelId)
+
+        display_days_in_channel(channel)
+    }
+
+    if (command == 'displaymonth') {
+        let channelId = servers[message.guild.id]
+        if (channelId == undefined) {
+            message.channel.send("You must set the display channel using '$setchannel' before using that command.")
+            return
+        }
+        
+        let channel = client.guilds.cache.get(message.guild.id).channels.cache.get(channelId)
+
+        display_months_in_channel(channel)
+    }
+
+    if (command == 'info') {
+        message.channel.send("Feature coming soon!")
     }
 })
 
 
-function display_holidays() {
+function display_days() {
     for (let server in servers) {
-        let channelId = servers[server]
 
-        let channel = client.guilds.cache.get(server).channels.cache.get(channelId)
-        
-        display_holidays_in_channel(channel)
+        try {
+            let channelId = servers[server]
 
+            let channel = client.guilds.cache.get(server).channels.cache.get(channelId)
+            
+            display_days_in_channel(channel)
+    
+        } catch(err)  {
+            
+        }
     }
 }
 
 
-function display_holidays_in_channel(channel) {
+function display_months() {
+    for (let server in servers) {
 
-    const today = new Date()
+        try {
+            let channelId = servers[server]
+
+            let channel = client.guilds.cache.get(server).channels.cache.get(channelId)
+            
+            display_months_in_channel(channel)
+    
+        } catch(err)  {
+            
+        }
+    }
+}
+
+
+function getDateString(today) {
 
     const dd = String(today.getDate()).padStart(2, '0')
     const mm = String(today.getMonth() + 1).padStart(2, '0')
@@ -91,19 +130,29 @@ function display_holidays_in_channel(channel) {
 
     const date = mm + '/' + dd + '/' + yyyy
 
+    return date;
+}
+
+
+function display_days_in_channel(channel) {
+
+    const today = new Date()
+
+    let date = getDateString(today)
+
     const month = today.toLocaleString('default', { month: 'long' })
     const day = today.getDate()
 
-    var holidays = data[month][day]
-    var holiday_text = ""
+    var days = nationalDays[month][day]
+    var text = ""
 
-    holidays.forEach(holiday => {
-        holiday_text += "\n - " + holiday
+    days.forEach(day => {
+        text += "\n - " + day
     })
 
     const embed = {
         color: 0xFF0000,
-        title: 'National Holidays',
+        title: 'National Days',
         url: 'https://nationaldaycalendar.com/',
         author: {
             name: 'Truth - ' + date,
@@ -115,8 +164,50 @@ function display_holidays_in_channel(channel) {
         },
         fields: [
             {
-                name: 'Current National Holidays',
-                value: holiday_text,
+                name: 'Current National Days',
+                value: text,
+            },
+        ],
+        timestamp: today,
+        footer: {
+            text: 'Truth by Dirk',
+            icon_url: 'https://images.albertsons-media.com/is/image/ABS/960131507?$ecom-pdp-desktop$&defaultImage=Not_Available',
+        },
+    };
+
+    channel.send({ embeds: [embed] });
+
+}
+
+function display_months_in_channel(channel) {
+
+    const today = new Date()
+
+    const month = today.toLocaleString('default', { month: 'long' })
+
+    var months = nationalMonths[month]
+    var text = ""
+
+    months.forEach(month => {
+        text += "\n - " + month
+    })
+
+    const embed = {
+        color: 0xFF0000,
+        title: 'National Months',
+        url: 'https://nationaldaycalendar.com/',
+        author: {
+            name: 'Truth - ' + month,
+            icon_url: 'https://images.albertsons-media.com/is/image/ABS/960131507?$ecom-pdp-desktop$&defaultImage=Not_Available',
+            url: 'https://nationaldaycalendar.com/',
+        },
+        thumbnail: {
+            url: 'https://images.albertsons-media.com/is/image/ABS/960131507?$ecom-pdp-desktop$&defaultImage=Not_Available',
+        },
+        fields: [
+            {
+                name: 'Current National Months',
+                value: text,
             },
         ],
         timestamp: today,
