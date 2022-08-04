@@ -7,8 +7,9 @@ const nationalDays = require("./national_days.json");
 const nationalMonths = require("./national_months.json");
 
 const cron = require('node-cron')
-let servers = require("./channels.json")
 let fs = require('fs')
+
+let servers = require("./channels.json")
 
 dotenv.config()
 const prefix = '$'
