@@ -18,3 +18,6 @@ Have you ever been minding your own business throughout the day and learned it's
 - The national days/months I am using are pulled from "https://nationaldaycalendar.com/"
 - National Days are be displayed every day at 12:01 AM CST
 - National Months will soon be displayed on the first of every month at 12:01 AM CST
+
+**How the Truth is running**
+Truth is running on an AWS EC2 instance using PM2. I ran into the issue of having to shut my computer off occasionally, so running it local would not work long-term. Putting Truth on a cloud server allows me to not have to worry about when the bot is running.
