@@ -100,7 +100,7 @@ function display_days() {
             display_days_in_channel(channel)
     
         } catch(err)  {
-            
+            print(err)
         }
     }
 }
@@ -117,7 +117,7 @@ function display_months() {
             display_months_in_channel(channel)
     
         } catch(err)  {
-            
+            print(err)
         }
     }
 }
