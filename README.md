@@ -1,4 +1,4 @@
-'Truth' is a Discord bot that displays the national days and will soon display the national months.
+'Truth' is a Discord bot that displays the national days and the national months.
 
 **Why did I make this?**
 
@@ -17,7 +17,7 @@ Have you ever been minding your own business throughout the day and learned it's
 **How Automation Works**
 - The national days/months I am using are pulled from "https://nationaldaycalendar.com/"
 - National Days are be displayed every day at 12:01 AM CST
-- National Months will soon be displayed on the first of every month at 12:01 AM CST
+- National Months be displayed on the first of every month at 12:01 AM CST
 
 **How the Truth is running**
 
