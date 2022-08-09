@@ -22,3 +22,6 @@ Have you ever been minding your own business throughout the day and learned it's
 **How the Truth is running**
 
 Truth is running on an AWS EC2 instance using PM2. I ran into the issue of having to shut my computer off occasionally, so running it local would not work long-term. Putting Truth on a cloud server allows me to not have to worry about when the bot is running.
+
+
+**If there are issues please message me on Discord at Dirk#8540 or gaugerderek@gmail.com**
