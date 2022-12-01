@@ -130,5 +130,3 @@ dist
 .pnp.*
 
 # Added by Derek
-*.txt
-channels.json

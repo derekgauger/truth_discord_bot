@@ -223,7 +223,7 @@ function print(value) {
 }
 
 
-client.login("OTI5MTIxNDcyMTM4NjA0NjE0.GYWpo-.8Kzcu4p3pz6dW4aL0Wkkm3OkOnRV9Ap1DDEfQE").then(() => {
+client.login(process.env.token).then(() => {
     client.user.setActivity("Straight Facts", {
         type: "LISTENING"
     })
