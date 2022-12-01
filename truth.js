@@ -1,16 +1,15 @@
 import DiscordJS, { Intents } from 'discord.js'
-import { ActivityTypes } from 'discord.js/typings/enums';
 import dotenv from 'dotenv'
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 
-const nationalDays = require("./national_days.json");
+import nationalDays from "./national_days.json" assert { type: "json" }
 const nationalMonths = require("./national_months.json");
 
 const cron = require('node-cron')
 let fs = require('fs')
 
-let servers = require("./channels.json")
+import servers from "./channels.json" assert { type: "json" }
 
 dotenv.config()
 const prefix = '$'
@@ -27,11 +26,6 @@ const client = new DiscordJS.Client({
 
 client.on('ready', () => {
     console.log("The Truth will be told...")
-
-    client.user.setPresence({
-        game: { name: '$info' },
-        status: 'online'
-    })
 
     const dayJob = cron.schedule("0 1 0 * * *", function () {
         display_days()
@@ -84,8 +78,8 @@ client.on('messageCreate', (message) => {
         display_months_in_channel(channel)
     }
 
-    if (command == 'info') {
-        message.channel.send("Feature coming soon!")
+    if (command == 'help') {
+        message.channel.send("Go to 'https://github.com/derekgauger/truth_discord_bot' to learn more about this discord bot")
     }
 })
 
@@ -158,11 +152,11 @@ function display_days_in_channel(channel) {
         url: 'https://nationaldaycalendar.com/',
         author: {
             name: 'Truth - ' + date,
-            icon_url: 'https://images.albertsons-media.com/is/image/ABS/960131507?$ecom-pdp-desktop$&defaultImage=Not_Available',
+            icon_url: "https://i.imgur.com/1wyNxV5.jpg",
             url: 'https://nationaldaycalendar.com/',
         },
         thumbnail: {
-            url: 'https://images.albertsons-media.com/is/image/ABS/960131507?$ecom-pdp-desktop$&defaultImage=Not_Available',
+            url: "https://i.imgur.com/1wyNxV5.jpg",
         },
         fields: [
             {
@@ -173,13 +167,14 @@ function display_days_in_channel(channel) {
         timestamp: today,
         footer: {
             text: 'Truth by Dirk',
-            icon_url: 'https://images.albertsons-media.com/is/image/ABS/960131507?$ecom-pdp-desktop$&defaultImage=Not_Available',
+            icon_url: "https://i.imgur.com/1wyNxV5.jpg",
         },
     };
 
     channel.send({ embeds: [embed] });
 
 }
+
 
 function display_months_in_channel(channel) {
 
@@ -200,11 +195,11 @@ function display_months_in_channel(channel) {
         url: 'https://nationaldaycalendar.com/',
         author: {
             name: 'Truth - ' + month,
-            icon_url: 'https://images.albertsons-media.com/is/image/ABS/960131507?$ecom-pdp-desktop$&defaultImage=Not_Available',
+            icon_url: "https://i.imgur.com/1wyNxV5.jpg",
             url: 'https://nationaldaycalendar.com/',
         },
         thumbnail: {
-            url: 'https://images.albertsons-media.com/is/image/ABS/960131507?$ecom-pdp-desktop$&defaultImage=Not_Available',
+            url: "https://i.imgur.com/1wyNxV5.jpg",
         },
         fields: [
             {
@@ -215,21 +210,21 @@ function display_months_in_channel(channel) {
         timestamp: today,
         footer: {
             text: 'Truth by Dirk',
-            icon_url: 'https://images.albertsons-media.com/is/image/ABS/960131507?$ecom-pdp-desktop$&defaultImage=Not_Available',
+            icon_url: "https://i.imgur.com/1wyNxV5.jpg",
         },
     };
 
     channel.send({ embeds: [embed] });
 }
 
+
 function print(value) {
     console.log(value)
 }
 
-client.login(process.env.TOKEN).then(() => {
-    client.user.setActivity("Spittin Straight Facts", {
-        type: ActivityTypes.CUSTOM,
+
+client.login("OTI5MTIxNDcyMTM4NjA0NjE0.GYWpo-.8Kzcu4p3pz6dW4aL0Wkkm3OkOnRV9Ap1DDEfQE").then(() => {
+    client.user.setActivity("Straight Facts", {
+        type: "LISTENING"
     })
 })
-
-
