@@ -1,4 +1,5 @@
 import DiscordJS, { Intents } from 'discord.js'
+import { ActivityTypes } from 'discord.js/typings/enums';
 import dotenv from 'dotenv'
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
@@ -226,7 +227,9 @@ function print(value) {
 }
 
 client.login(process.env.TOKEN).then(() => {
-    client.user.setStatus('Eating')
+    client.user.setActivity("Spittin Straight Facts", {
+        type: ActivityTypes.CUSTOM,
+    })
 })
 
 
