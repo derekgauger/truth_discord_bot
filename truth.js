@@ -219,14 +219,14 @@ function display_months_in_channel(channel) {
     };
 
     channel.send({ embeds: [embed] });
-
 }
-
 
 function print(value) {
     console.log(value)
 }
 
-client.login(process.env.TOKEN)
+client.login(process.env.TOKEN).then(() => {
+    client.user.setStatus('Eating')
+})
 
 
