@@ -2,7 +2,7 @@ import DiscordJS, { Intents } from 'discord.js'
 import dotenv from 'dotenv'
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
-
+require('dotenv').config();
 import nationalDays from "./national_days.json" assert { type: "json" }
 const nationalMonths = require("./national_months.json");
 
