@@ -27,11 +27,11 @@ const client = new DiscordJS.Client({
 client.on('ready', () => {
     console.log("The Truth will be told...")
 
-    const dayJob = cron.schedule("10 1 0 * * *", function () {
+    const dayJob = cron.schedule("0 1 6 * * *", function () {
         display_days()
     });
 
-    const monthJob = cron.schedule("10 1 0 1 * *", function () {
+    const monthJob = cron.schedule("0 1 6 1 * *", function () {
         display_months()
     });
 })
