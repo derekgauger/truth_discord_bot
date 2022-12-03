@@ -20,7 +20,7 @@ def getHTMLdocument(url):
 def HTMLtoAscii(text):
     return str(text.encode('ascii', 'ignore').decode('utf-8'))
 
-url = "https://nationaldaycalendar.com/tomorrow/"
+url = "https://nationaldaycalendar.com/what-day-is-it/"
 
 html_document = getHTMLdocument(url)
 
