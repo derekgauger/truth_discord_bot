@@ -3,6 +3,7 @@ import requests
 import re
 from datetime import datetime
 import json
+import subprocess
 
 today = datetime.now()
 
@@ -31,6 +32,8 @@ for span in soup.find_all('span', attrs={'class': re.compile("^evcal_desc2 evcal
     if matches:
         date_dict[current_month][str(int(current_day))].append(HTMLtoAscii(matches.groups()[0]))
 
-with open('/home/ubuntu/truth_discord_bot/national_days.json', 'w') as f:
+with open('national_days.json', 'w') as f:
+    print("here too")
+    print(json.dumps(date_dict, indent=4))
     f.write(json.dumps(date_dict, indent=4))
-
+print("Got here")
