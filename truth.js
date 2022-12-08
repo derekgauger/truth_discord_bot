@@ -12,7 +12,7 @@ let fs = require('fs')
 import servers from "./channels.json" assert { type: "json" }
 
 dotenv.config()
-const prefix = '$'
+const prefix = '!'
 
 const client = new DiscordJS.Client({
     intents: [
@@ -29,6 +29,7 @@ client.on('ready', () => {
 
     const dayJob = cron.schedule("0 1 6 * * *", function () {
         display_days()
+        display_blurb()
     });
 
     const monthJob = cron.schedule("0 1 6 1 * *", function () {
@@ -78,6 +79,18 @@ client.on('messageCreate', (message) => {
         display_months_in_channel(channel)
     }
 
+    if (command == 'displayblurb') {
+        let channelId = servers[message.guild.id]
+        if (channelId == undefined) {
+            message.channel.send("You must set the display channel using '$setchannel' before using that command.")
+            return
+        }
+
+        let channel = client.guilds.cache.get(message.guild.id).channels.cache.get(channelId)
+
+        display_blurb_in_channel(channel)
+    }
+
     if (command == 'help') {
         message.channel.send("Go to 'https://github.com/derekgauger/truth_discord_bot' to learn more about this discord bot")
     }
@@ -112,6 +125,20 @@ function display_months() {
             display_months_in_channel(channel)
     
         } catch(err)  {
+            print(err)
+        }
+    }
+}
+
+function display_blurb() {
+    for (let server in server) {
+        try {
+            let channelId = servers[server]
+
+            let channel = client.guilds.cache.get(server).channels.cache.get(channelId)
+            
+            display_blurb_in_channel(channel)
+        } catch(err) {
             print(err)
         }
     }
@@ -215,6 +242,16 @@ function display_months_in_channel(channel) {
     };
 
     channel.send({ embeds: [embed] });
+}
+
+function display_blurb_in_channel(channel) {
+    fs.readFile("./national_day_blurb.txt", (err, text) => {
+        if (err) {
+            print(err)
+        }
+        channel.send(text.toString())
+        
+    })
 }
 
 
