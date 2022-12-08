@@ -7,7 +7,7 @@ import json
 
 
 TODAY_URL = "https://nationaltoday.com/what-is-today/"
-PATH_TO_JSON = "/home/ubunut/truth_discord_bot/national_days.json"
+PATH_TO_JSON = "/home/ubuntu/truth_discord_bot/national_days.json"
 # PATH_TO_JSON = "./national_days.json"
 
 
