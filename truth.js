@@ -12,7 +12,7 @@ let fs = require('fs')
 import servers from "./channels.json" assert { type: "json" }
 
 dotenv.config()
-const prefix = '!'
+const prefix = '$'
 
 const client = new DiscordJS.Client({
     intents: [
