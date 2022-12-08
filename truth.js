@@ -149,11 +149,11 @@ function display_days_in_channel(channel) {
     const embed = {
         color: 0xFF0000,
         title: 'National Days',
-        url: 'https://nationaldaycalendar.com/',
+        url: 'https://nationaltoday.com/what-is-today/',
         author: {
             name: 'Truth - ' + date,
             icon_url: "https://i.imgur.com/1wyNxV5.jpg",
-            url: 'https://nationaldaycalendar.com/',
+            url: 'https://nationaltoday.com/what-is-today/',
         },
         thumbnail: {
             url: "https://i.imgur.com/1wyNxV5.jpg",
@@ -192,11 +192,11 @@ function display_months_in_channel(channel) {
     const embed = {
         color: 0xFF0000,
         title: 'National Months',
-        url: 'https://nationaldaycalendar.com/',
+        url: 'https://nationaltoday.com/what-is-today/',
         author: {
             name: 'Truth - ' + month,
             icon_url: "https://i.imgur.com/1wyNxV5.jpg",
-            url: 'https://nationaldaycalendar.com/',
+            url: 'https://nationaltoday.com/what-is-today/',
         },
         thumbnail: {
             url: "https://i.imgur.com/1wyNxV5.jpg",
