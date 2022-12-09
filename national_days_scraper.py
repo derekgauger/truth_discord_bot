@@ -13,10 +13,10 @@ current_day = str(int(today.strftime("%d")))
 
 # TODAY_URL = "https://nationaltoday.com/what-is-today/"
 TODAY_URL = "https://nationaltoday.com/{}-{}-holidays/".format(current_month.lower(), current_day)
-PATH_TO_JSON = "/home/ubuntu/truth_discord_bot/national_days.json"
-PATH_TO_TXT = "/home/ubuntu/truth_discord_bot/national_day_blurb.txt"
-# PATH_TO_JSON = "./national_days.json"
-# PATH_TO_TXT = "./national_day_blurb.txt"
+# PATH_TO_JSON = "/home/ubuntu/truth_discord_bot/national_days.json"
+# PATH_TO_TXT = "/home/ubuntu/truth_discord_bot/national_day_blurb.txt"
+PATH_TO_JSON = "./national_days.json"
+PATH_TO_TXT = "./national_day_blurb.txt"
 
 
 def get_HTML_document(url):
@@ -63,6 +63,13 @@ def get_national_day_blurb():
         if paragraph.startswith("{} {}".format(current_month, current_day)):
             retVal = paragraph
             break
+
+    if retVal == None:
+        for i in soup.find_all("div", attrs={"class": re.compile("day-content")}):
+            paragraph = HTML_to_ascii(i.text)
+            if paragraph.strip().startswith("{} {}".format(current_month, current_day)):
+                retVal = paragraph
+                break
     
     return retVal
     
