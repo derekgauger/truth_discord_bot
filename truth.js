@@ -45,7 +45,10 @@ client.handleCommands()
 var guild_id_list = []
 client.once('ready', () => {
     guild_id_list = client.guilds.cache.map(guild => guild.id)
-    console.log(guild_id_list)
+    guild_id_list.forEach((guildId) => {
+        console.log(client.guilds.cache.get(guildId).name + " : " + guildId)
+    })
+    
     console.log("The Truth will be told...")
 
     const dayJob = cron.schedule("0 1 6 * * *", function () {
