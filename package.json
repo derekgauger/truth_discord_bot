@@ -2,7 +2,6 @@
   "name": "truth_discord_bot",
   "version": "1.0.0",
   "main": "truth.js",
-  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,7 +16,8 @@
   },
   "homepage": "https://github.com/derekgauger/truth_discord_bot#readme",
   "dependencies": {
-    "discord.js": "^13.9.2",
+    "aws-sdk": "^2.1272.0",
+    "discord.js": "^14.3.0",
     "dotenv": "^16.0.1",
     "google-img-scrap": "^1.0.7",
     "jimp": "^0.16.0",
