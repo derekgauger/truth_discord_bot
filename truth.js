@@ -12,7 +12,6 @@ require("./functions/automation/month_automation")
 require("./functions/automation/blurb_automation")
 
 const nationalMonths = require("./national_months.json");
-let servers = require("./channels.json")
 
 const token = process.env.token
 const bot_id = process.env.bot_id 

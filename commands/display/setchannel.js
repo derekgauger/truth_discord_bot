@@ -11,7 +11,7 @@ module.exports = {
         let reply = ""
         try {
             client.addChannel(name, id, channel_id)
-            reply = "This channel has been successfully set to receive automated messages"
+            reply = "This channel has been successfully set to receive automated messages. Use /displayday, /displayblurb, and /displaymonth"
         } catch(error) {
             reply = "There was an error :( - Contact: Dirk#8540"
         }
