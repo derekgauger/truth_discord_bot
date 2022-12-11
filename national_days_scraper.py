@@ -13,10 +13,10 @@ current_day = str(int(today.strftime("%d")))
 
 # TODAY_URL = "https://nationaltoday.com/what-is-today/"
 TODAY_URL = "https://nationaltoday.com/{}-{}-holidays/".format(current_month.lower(), current_day)
-# PATH_TO_JSON = "/home/ubuntu/truth_discord_bot/national_days.json"
-# PATH_TO_TXT = "/home/ubuntu/truth_discord_bot/national_day_blurb.txt"
-PATH_TO_JSON = "./national_days.json"
-PATH_TO_TXT = "./national_day_blurb.txt"
+PATH_TO_JSON = "/home/ubuntu/truth_discord_bot/national_days.json"
+PATH_TO_TXT = "/home/ubuntu/truth_discord_bot/national_day_blurb.txt"
+# PATH_TO_JSON = "./national_days.json"
+# PATH_TO_TXT = "./national_day_blurb.txt"
 
 
 def get_HTML_document(url):
