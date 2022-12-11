@@ -12,6 +12,7 @@ require("./functions/automation/month_automation")
 require("./functions/automation/blurb_automation")
 
 const nationalMonths = require("./national_months.json");
+const nationalMonths = require("./national_days.json");
 
 const token = process.env.token
 const bot_id = process.env.bot_id 
