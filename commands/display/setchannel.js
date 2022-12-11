@@ -8,6 +8,8 @@ module.exports = {
         const id = interaction.guild.id
         const channel_id = interaction.channel.id
 
+        console.log(`'${interaction.user.username}' used /setchannel in '${interaction.guild.lname}'`)
+
         let reply = ""
         try {
             client.addChannel(name, id, channel_id)

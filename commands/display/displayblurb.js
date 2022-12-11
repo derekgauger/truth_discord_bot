@@ -7,6 +7,7 @@ module.exports = {
     async execute(interaction, client) {
 
         const message = client.createBlurb()
+        console.log(`'${interaction.user.username}' used /displayblurb in '${interaction.guild.name}'`)
 
         await interaction.reply({
             content: message

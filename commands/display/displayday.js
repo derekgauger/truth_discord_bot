@@ -9,6 +9,7 @@ module.exports = {
         
         let embed = await client.createDay()
         interaction.channel.send({embeds: [embed]})
+        console.log(`'${interaction.user.username}' used /displayday in '${interaction.guild.name}'`)
 
         await interaction.reply({
             content: "Enjoy your day!"

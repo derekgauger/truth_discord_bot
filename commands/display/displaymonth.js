@@ -9,6 +9,7 @@ module.exports = {
         
         let embed = await client.createMonth()
         interaction.channel.send({embeds: [embed]})
+        console.log(`'${interaction.user.username}' used /displaymonth in '${interaction.guild.name}'`)
 
         await interaction.reply({
             content: "Hope you have a nice month!"
