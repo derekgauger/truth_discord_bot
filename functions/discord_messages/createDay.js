@@ -1,4 +1,4 @@
-const nationalDays = require("../../national_days.json")
+const nationalDays = require("./national_days.json")
 
 module.exports = (client) => {
     client.createDay = async () => {
