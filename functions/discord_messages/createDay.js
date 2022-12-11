@@ -15,9 +15,9 @@ module.exports = (client) => {
         console.log(nationalDays)
         console.log(days)
         
-        days.forEach(day => {
-            text += "\n - " + day
-        })
+        // days.forEach(day => {
+        //     text += "\n - " + day
+        // })
     
         const embed = {
             color: 0xFF0000,
