@@ -8,9 +8,12 @@ module.exports = (client) => {
     
         const month = today.toLocaleString('default', { month: 'long' })
         const day = today.getDate()
-        
+        console.log(day)
+        console.log(month)
         var days = nationalDays[month][day]
         var text = ""
+        console.log(nationalDays)
+        console.log(days)
         
         days.forEach(day => {
             text += "\n - " + day
