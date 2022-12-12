@@ -1,9 +1,8 @@
-from locale import currency
 from bs4 import BeautifulSoup
 import requests
 import re
 from datetime import datetime
-import json
+import os
 
 
 today = datetime.now()
@@ -13,10 +12,10 @@ current_day = str(int(today.strftime("%d")))
 
 # TODAY_URL = "https://nationaltoday.com/what-is-today/"
 TODAY_URL = "https://nationaltoday.com/{}-{}-holidays/".format(current_month.lower(), current_day)
-PATH_TO_JSON = "/home/ubuntu/truth_discord_bot/national_days.json"
-PATH_TO_TXT = "/home/ubuntu/truth_discord_bot/national_day_blurb.txt"
-# PATH_TO_JSON = "./national_days.json"
-# PATH_TO_TXT = "./national_day_blurb.txt"
+PATH_TO_DAYS = "/home/ubuntu/truth_discord_bot/national_days.txt"
+PATH_TO_BLURB = "/home/ubuntu/truth_discord_bot/national_day_blurb.txt"
+# PATH_TO_DAYS = "./national_days.txt"
+# PATH_TO_BLURB = "./national_day_blurb.txt"
 
 
 def get_HTML_document(url):
@@ -37,11 +36,9 @@ def remove_duplicates(list):
     return  filtered_list
 
 
-def create_national_day_dictionary():
+def create_national_day_list():
 
-    date_dict = {}
-    date_dict[current_month] = {}
-    date_dict[current_month][current_day] = []
+    day_list = []
 
     html_document = get_HTML_document(TODAY_URL)
     soup = BeautifulSoup(html_document, 'html.parser')
@@ -49,9 +46,10 @@ def create_national_day_dictionary():
     for i in remove_duplicates(soup.find_all('h3', attrs={'class': re.compile("^holiday-title")})):
         title = HTML_to_ascii(i.text)
         if not "birthday" in title.lower():
-            date_dict[current_month][current_day].append(title)
 
-    return date_dict
+            day_list.append(title)
+
+    return day_list
 
 
 def get_national_day_blurb():
@@ -70,19 +68,30 @@ def get_national_day_blurb():
             if paragraph.strip().startswith("{} {}".format(current_month, current_day)):
                 retVal = paragraph
                 break
+        retVal = "I have no fun facts for today. Maybe I will have some tomorrow. Who knows :)"
+    
+    return retVal
+
+
+def format_day_list(day_list):
+    retVal = ""
+    for title in day_list:
+        retVal += " - {}\n".format(title)
     
     return retVal
     
 
 def main():
-    date_dict_today = create_national_day_dictionary()
+    day_list = create_national_day_list()
     day_blurb = get_national_day_blurb()
 
-    if day_blurb:
-        open(PATH_TO_TXT, 'w').write(day_blurb)
-    else:
-        open(PATH_TO_TXT, 'w').write("I have no fun facts for today. Maybe I will have some tomorrow. Who knows :)")
+    if not os.path.exists(PATH_TO_BLURB):
+        open(PATH_TO_BLURB, "x")
+    
+    if not os.path.exists(PATH_TO_DAYS):
+        open(PATH_TO_DAYS, 'x')
 
-    open(PATH_TO_JSON, 'w').write(json.dumps(date_dict_today, indent=4))
+    open(PATH_TO_BLURB, 'w').write(day_blurb)
+    open(PATH_TO_DAYS, 'w').write(format_day_list(day_list))
 
 main()

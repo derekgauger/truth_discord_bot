@@ -8,7 +8,7 @@ module.exports = {
         const id = interaction.guild.id
         const channel_id = interaction.channel.id
 
-        console.log(`'${interaction.user.username}' used /setchannel in '${interaction.guild.lname}'`)
+        console.log(`'${interaction.user.username}' used /setchannel in '${name}'`)
 
         let reply = ""
         try {
