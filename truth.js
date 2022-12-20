@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const { REST } = require("@discordjs/rest");
-const { Routes } = require("discord-api-types/v10");
+const { Routes } = require("discord-api-types/v9");
 require('dotenv').config();
 const AWS = require('aws-sdk')
 
@@ -14,7 +14,7 @@ require("./functions/automation/blurb_automation")
 const token = process.env.token
 const bot_id = process.env.bot_id
 
-const rest = new REST({ version: "10" }).setToken(process.env.token);
+const rest = new REST({ version: "9" }).setToken(process.env.token);
 
 const client = new Discord.Client({
     intents: Discord.GatewayIntentBits.Guilds
@@ -35,9 +35,9 @@ for (const folder of functionFolders) {
 client.handleEvents()
 client.login(token).then(() => {
     client.user.setPresence({
-        activities: [{ name: `Straight Facts`, type: Discord.ActivityType.Listening }],
+        activities: [{ name: `the Truth | use '/info'`, type: Discord.ActivityType.Playing }],
         status: 'Online',
-    })
+      })
 })
 
 client.handleCommands()
@@ -48,7 +48,7 @@ client.once('ready', () => {
     guild_id_list.forEach((guildId) => {
         console.log(client.guilds.cache.get(guildId).name + " : " + guildId)
     })
-
+    
     console.log("The Truth will be told...")
 
     const dayJob = cron.schedule("0 1 6 * * *", function () {
@@ -70,10 +70,10 @@ client.on('guildCreate', guild => {
 })
 
 client.on("guildDelete", guild => {
-    console.log("Truth has left a guild: " + guild.name);
-    const index = guild_id_list.indexOf(5);
-    if (index > -1) { // only splice array when item is found
-        guild_id_list.splice(index, 1); // 2nd parameter means remove one item only
+    console.log("Truth has left a guild: " + guild.name)
+    const index = guild_id_list.indexOf(5)
+    if (index > -1) {
+        guild_id_list.splice(index, 1)
     }
 })
 
