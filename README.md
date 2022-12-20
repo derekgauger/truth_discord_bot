@@ -5,7 +5,7 @@
 Have you ever been minding your own business throughout the day and learned it's National Donut Day. Then you wonder, how are people knowing this type of thing or how can I keep up with the national days? Well here is the answer...
 
 **Add to Server**
-- Click the following link: https://discord.com/oauth2/authorize?client_id=929121472138604614&scope=bot
+- Click the following link: https://discord.com/oauth2/authorize?scope=bot%20applications.commands&client_id=929121472138604614&permissions=277025901632
 - Follow instructions in that link
 
 **Server Setup**
