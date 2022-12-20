@@ -15,7 +15,9 @@ const nationalMonths = require("./national_months.json");
 const nationalDays = require("./national_days.json");
 
 const token = process.env.token
-const bot_id = process.env.bot_id 
+const bot_id = process.env.bot_id
+
+const rest = new REST({ version: "9" }).setToken(process.env.token);
 
 const client = new Discord.Client({
     intents: Discord.GatewayIntentBits.Guilds
@@ -60,7 +62,25 @@ client.once('ready', () => {
     const monthJob = cron.schedule("0 1 6 1 * *", function () {
         client.displayMonths()
     });
-    const rest = new REST({ version: "9" }).setToken(process.env.token);
+    setCommands()
+})
+
+client.on('guildCreate', guild => {
+    console.log("Truth has joined: " + guild.name)
+    rest.put(Routes.applicationGuildCommands(bot_id, guild.id), {
+        body: client.commandArray,
+    });
+})
+
+client.on("guildDelete", guild => {
+    console.log("Truth has left a guild: " + guild.name);
+    const index = guild_id_list.indexOf(5);
+    if (index > -1) { // only splice array when item is found
+        guild_id_list.splice(index, 1); // 2nd parameter means remove one item only
+    }
+})
+
+function setCommands() {
     try {
         guild_id_list.forEach((guildId) => {
             rest.put(Routes.applicationGuildCommands(bot_id, guildId), {
@@ -70,4 +90,4 @@ client.once('ready', () => {
     } catch (e) {
         console.error(e);
     }
-})
+}
