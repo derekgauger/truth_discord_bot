@@ -1,21 +1,16 @@
-const nationalDays = require("../../national_days.json")
+const fs = require('fs')
 
 module.exports = (client) => {
     client.createDay = async () => {
         const today = new Date()
 
         let date = getDateString(today)
-    
+
         const month = today.toLocaleString('default', { month: 'long' })
         const day = today.getDate()
 
-        var days = nationalDays[month][day]
-        var text = ""
-        
-        days.forEach(day => {
-            text += "\n - " + day
-        })
-    
+        var text = "\n" + fs.readFileSync("national_days.txt").toString()
+
         const embed = {
             color: 0xFF0000,
             title: 'National Days',
@@ -40,7 +35,7 @@ module.exports = (client) => {
                 icon_url: "https://i.imgur.com/1wyNxV5.jpg",
             },
         };
-        
+
         return embed
     }
 }
