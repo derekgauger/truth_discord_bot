@@ -1,19 +1,24 @@
-const Discord = require('discord.js')
+const { SlashCommandBuilder } = require('discord.js')
 const fs = require('fs')
 require('../../functions/discord_messages/createMonth')
 
 module.exports = {
-    data: new Discord.SlashCommandBuilder().setName('displaymonth').setDescription("Display all the current month's fun national celebrations"),
+    data: new SlashCommandBuilder()
+        .setName('displaymonth')
+        .setDescription("Display all the current month's fun national celebrations")
+        .setDescriptionLocalizations({
+            de: 'Zeigt alle nationalen Feiertage des aktuellen Monats an',
+        }),
 
     async execute(interaction, client) {
-        
+
         let embed = await client.createMonth()
-        interaction.channel.send({embeds: [embed]})
         console.log(`'${interaction.user.username}' used /displaymonth in '${interaction.guild.name}'`)
 
         await interaction.reply({
-            content: "Hope you have a nice month!"
-        })
+            content: "Hope you have a nice month!",
+            embeds: [embed]
+        }).catch(err => console.log(err))
     }
 }
 

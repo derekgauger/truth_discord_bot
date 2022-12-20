@@ -1,8 +1,13 @@
-const Discord = require("discord.js");
+const { SlashCommandBuilder } = require('discord.js')
 require('../../functions/dynamodb/addChannel')
 module.exports = {
-    data: new Discord.SlashCommandBuilder().setName('setchannel').setDescription("Set the display channel for the automated messages"),
-    
+    data: new SlashCommandBuilder()
+        .setName('setchannel')
+        .setDescription("Set the display channel for the automated messages")
+        .setDescriptionLocalizations({
+            de: 'Setzt den Kanal für die automatischen Nachrichten',
+        }),
+
     async execute(interaction, client) {
         const name = interaction.guild.name
         const id = interaction.guild.id
@@ -14,12 +19,12 @@ module.exports = {
         try {
             client.addChannel(name, id, channel_id)
             reply = "This channel has been successfully set to receive automated messages. Use /displayday, /displayblurb, and /displaymonth"
-        } catch(error) {
+        } catch (error) {
             reply = "There was an error :( - Contact: Dirk#8540"
         }
 
         await interaction.reply({
             content: reply
-        })
+        }).catch(err => console.log(err))
     }
 }
