@@ -9,6 +9,7 @@ Have you ever been minding your own business throughout the day and learned it's
 - Follow instructions in that link
 
 **Server Setup**
+- Use the /info command to show the invite and voting links
 - Use the /setchannel command to give Truth a target automated messaging channel for your server (Automated messages will **NOT** work if this command is not executed)
 - Use the /displayday command to show the current national days
 - Use the /displaymonth command to show the current national months
