@@ -6,6 +6,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('displaymonth')
         .setDescription("Display all the current month's fun national celebrations")
+        .setDMPermission(true)
         .setDescriptionLocalizations({
             de: 'Zeigt alle nationalen Feiertage des aktuellen Monats an',
         }),
