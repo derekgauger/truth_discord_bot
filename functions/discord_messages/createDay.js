@@ -17,11 +17,11 @@ module.exports = (client) => {
             url: 'https://nationaltoday.com/what-is-today/',
             author: {
                 name: 'Truth - ' + date,
-                icon_url: "https://i.imgur.com/1wyNxV5.jpg",
+                icon_url: "https://i.imgur.com/6NtiiP4.png",
                 url: 'https://nationaltoday.com/what-is-today/',
             },
             thumbnail: {
-                url: "https://i.imgur.com/1wyNxV5.jpg",
+                url: "https://i.imgur.com/6NtiiP4.png",
             },
             fields: [
                 {
@@ -32,7 +32,7 @@ module.exports = (client) => {
             timestamp: today,
             footer: {
                 text: 'Truth by Dirk',
-                icon_url: "https://i.imgur.com/1wyNxV5.jpg",
+                icon_url: "https://i.imgur.com/6NtiiP4.png",
             },
         };
 

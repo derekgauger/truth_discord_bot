@@ -9,11 +9,11 @@ module.exports = (client) => {
             color: 0xFF0000,
             author: {
                 name: 'Truth',
-                icon_url: "https://i.imgur.com/1wyNxV5.jpg",
+                icon_url: "https://i.imgur.com/6NtiiP4.png",
                 url: 'https://top.gg/bot/929121472138604614',
             },
             thumbnail: {
-                url: "https://i.imgur.com/1wyNxV5.jpg",
+                url: "https://i.imgur.com/6NtiiP4.png",
             },
             fields: [
                 {
@@ -24,7 +24,7 @@ module.exports = (client) => {
             timestamp: today,
             footer: {
                 text: 'Truth by Dirk',
-                icon_url: "https://i.imgur.com/1wyNxV5.jpg",
+                icon_url: "https://i.imgur.com/6NtiiP4.png",
             },
         };    
 
