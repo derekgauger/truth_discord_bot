@@ -26,7 +26,5 @@ module.exports = (client, interaction) => {
           ephemeral: true,
         });
       }
-    }
-  }
   };
   
