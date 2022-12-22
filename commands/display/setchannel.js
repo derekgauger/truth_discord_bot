@@ -4,6 +4,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('setchannel')
         .setDescription("Set the display channel for the automated messages")
+        .setDMPermission(false)
         .setDescriptionLocalizations({
             de: 'Setzt den Kanal für die automatischen Nachrichten',
         }),
