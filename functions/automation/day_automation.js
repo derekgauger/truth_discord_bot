@@ -31,13 +31,8 @@ module.exports = (client) => {
                 if (err) {
                     console.log(err)
                 } else {
-                    if (data.Item === undefined) {
-                        const channel_list = client.guilds.cache.get(guildId).channels.cache.map(channel => channel.id)
-                        let channel_id = channel_list[0]
-                        let channel = client.channels.cache.get(channel_id)
-                        channel.send("You missed out on the automatic national day display! Use /setchannel to designated a channel for those messages!")
+                    if (data.Item !== undefined) {
                         
-                    } else {
                         let channel_id = data.Item.channelId
                         let channel = client.channels.cache.get(channel_id)
 
