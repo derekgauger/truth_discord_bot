@@ -17,14 +17,15 @@ module.exports = {
 
         let reply = ""
         try {
-            if (
-                interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)
-              ) {
-            client.addChannel(name, id, channel_id)
-            reply = "This channel has been successfully set to receive automated messages. Use /displayday, /displayblurb, and /displaymonth"
+            if (interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
+                client.addChannel(name, id, channel_id)
+                reply = "This channel has been successfully set to receive automated messages. Use /displayday, /displayblurb, and /displaymonth"
+
             } else {
-            reply = "You do not have permission to use this command. You need the **'Manage Server'** permission to proceed."
+                reply = "You do not have permission to use this command. You need the **'Manage Server'** permission to proceed."
+                
             }
+
         } catch (error) {
             reply = "There was an error :( - Contact: Dirk#8540"
         }
