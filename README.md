@@ -1,4 +1,4 @@
-'Truth' is a Discord bot that displays the national days and the national months.
+'Truth' is a Discord bot that displays the national day and months celebrations.
 
 **Why did I make this?**
 
@@ -12,8 +12,8 @@ Have you ever been minding your own business throughout the day and learned it's
 - Use the /info command to show the invite and voting links
 - Use the /setchannel command to give Truth a target automated messaging channel for your server (Automated messages will **NOT** work if this command is not executed)
 - Use the /unsetchannel command to remove automated messages from your server
-- Use the /displayday command to show the current national days
-- Use the /displaymonth command to show the current national months
+- Use the /displayday command to show the current national day celebrations
+- Use the /displaymonth command to show the current national month celebrations
 - Use the /displayblurb command to show a short paragraph about the current day
 
 **How Automation Works**
