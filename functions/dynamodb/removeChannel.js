@@ -10,27 +10,23 @@ AWS.config.update({
 })
 
 module.exports = (client) => {
-    client.addChannel = async (guildName, guildId, channelId) => {
+    client.removeChannel = async (guildId, guildName) => {
 
         const params = {
-            TableName: 'truth-discord-info',
-            Item: {
-                id: guildId,
-                name: guildName,
-                channelId: channelId,
-            }
+            Key: {
+                id: `${guildId}`
+            },
+            TableName: 'truth-discord-info'
         }
         
         const docClient = new AWS.DynamoDB.DocumentClient();
 
-        docClient.put(params, (error) => {
+        await docClient.delete(params, (error) => {
             if (!error) {
-                console.log(`Server: '${guildName}' has been added to the database`)
+                console.log(`Server: '${guildName}' has been removed from the database`)
             } else {
-                throw "Unable to save record, err: " + error
+                throw "Unable to delete the record, err: " + error
             }
         })
-
     }
 }
-

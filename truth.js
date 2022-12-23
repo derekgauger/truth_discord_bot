@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const { REST } = require("@discordjs/rest");
-const { Routes } = require("discord-api-types/v9");
+const { Routes } = require("discord-api-types/v10");
 require('dotenv').config();
 const AWS = require('aws-sdk')
 
@@ -14,7 +14,7 @@ require("./functions/automation/blurb_automation")
 const token = process.env.token
 const bot_id = process.env.bot_id
 
-const rest = new REST({ version: "9" }).setToken(process.env.token);
+const rest = new REST({ version: "10" }).setToken(process.env.token);
 
 const client = new Discord.Client({
     intents: Discord.GatewayIntentBits.Guilds
