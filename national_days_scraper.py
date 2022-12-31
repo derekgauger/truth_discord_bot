@@ -12,6 +12,7 @@ current_day = str(int(today.strftime("%d")))
 
 # TODAY_URL = "https://nationaltoday.com/what-is-today/"
 TODAY_URL = "https://nationaltoday.com/{}-{}-holidays/".format(current_month.lower(), current_day)
+FACTS_URL = "https://www.factmonster.com/dayinhistory/{}-{}".format(current_month.lower(), today.strftime("%d"))
 PATH_TO_DAYS = "/home/ubuntu/truth_discord_bot/national_days.txt"
 PATH_TO_BLURB = "/home/ubuntu/truth_discord_bot/national_day_blurb.txt"
 # PATH_TO_DAYS = "./national_days.txt"
@@ -53,23 +54,14 @@ def create_national_day_list():
 
 
 def get_national_day_blurb():
-    retVal = None
-    html_document = get_HTML_document(TODAY_URL)
+    retVal = "On {} {}, the following things occured:\n".format(current_month, current_day)
+    html_document = get_HTML_document(FACTS_URL)
     soup = BeautifulSoup(html_document, 'html.parser')
-    for i in soup.find_all('p'):
-        paragraph = HTML_to_ascii(i.text)
-        if paragraph.startswith("{} {}".format(current_month, current_day)):
-            retVal = paragraph
-            break
-
-    if retVal == None:
-        for i in soup.find_all("div", attrs={"class": re.compile("day-content")}):
-            paragraph = HTML_to_ascii(i.text)
-            if paragraph.strip().startswith("{} {}".format(current_month, current_day)):
-                retVal = paragraph
-                break
-        retVal = "I have no fun facts for today. Maybe I will have some tomorrow. Who knows :)"
-    
+    for i in soup.find_all('ul', {"class": "features links"}):
+        for j in i:
+            paragraph = HTML_to_ascii(j.text)
+            retVal += " - {}\n".format(paragraph)
+            
     return retVal
 
 

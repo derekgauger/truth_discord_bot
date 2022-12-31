@@ -23,14 +23,13 @@ module.exports = {
         try {
             if (interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
                 let channel = await client.getChannel(id)
-                console.log(channel)
 
                 if (channel === true) {
                     await client.removeChannel(id, name)
                     reply = "Removed automated messages from this channel!"
 
                 } else {
-                    reply = "This channel is currently not set to receive automated messages!"
+                    reply = "Your server is currently not setup to receive automated messages!"
 
                 }
 

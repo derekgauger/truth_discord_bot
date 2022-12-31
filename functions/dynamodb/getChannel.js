@@ -25,7 +25,7 @@ module.exports = (client) => {
 
         let result = await docClient.get(params).promise();
         if (result.Item !== undefined && result.Item !== null) {
-          exists = true
+            exists = true
         }
 
         return (exists)
