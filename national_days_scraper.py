@@ -10,9 +10,8 @@ today = datetime.now()
 current_month = today.strftime('%B')
 current_day = str(int(today.strftime("%d")))
 
-# TODAY_URL = "https://nationaltoday.com/what-is-today/"
 TODAY_URL = "https://nationaltoday.com/{}-{}-holidays/".format(current_month.lower(), current_day)
-FACTS_URL = "https://www.factmonster.com/dayinhistory/{}-{}".format(current_month.lower(), today.strftime("%d"))
+FACTS_URL = "https://www.thefactsite.com/day/{}-{}".format(current_month.lower(), current_day)
 PATH_TO_DAYS = "/home/ubuntu/truth_discord_bot/national_days.txt"
 PATH_TO_BLURB = "/home/ubuntu/truth_discord_bot/national_day_blurb.txt"
 # PATH_TO_DAYS = "./national_days.txt"
@@ -54,16 +53,28 @@ def create_national_day_list():
 
 
 def get_national_day_blurb():
-    retVal = "On {} {}, the following things occured:\n".format(current_month, current_day)
+    facts = ""
+    birthdays = "Today is also the birthday of "
     html_document = get_HTML_document(FACTS_URL)
     soup = BeautifulSoup(html_document, 'html.parser')
-    for i in soup.find_all('ul', {"class": "features links"}):
-        for j in i:
-            paragraph = HTML_to_ascii(j.text)
-            retVal += " - {}\n".format(paragraph)
-            
-    return retVal
+    for i, element in enumerate(soup.find_all('h3')):
+        paragraph = HTML_to_ascii(element.text)
+        fact_match = re.search(r'\d+\s\s(.*)', paragraph)
+        birthday_match = re.search(r'^\s\d+\s(.*)', paragraph)
 
+        if fact_match and i % 2 == 0:
+            facts += fact_match.groups()[0] + " "
+        
+        if birthday_match:
+            name = birthday_match.groups()[0]
+            death_match = re.search(r'^- \d+\s(.*)', name)
+            if not death_match:
+                birthdays += "{}, ".format(name)
+
+    return "{}{}".format(facts, rreplace(birthdays, ",", ".", 1))
+
+def rreplace(s, old, new, count):
+     return (s[::-1].replace(old[::-1], new[::-1], count))[::-1]
 
 def format_day_list(day_list):
     retVal = ""
