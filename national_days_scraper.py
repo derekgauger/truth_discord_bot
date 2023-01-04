@@ -53,7 +53,7 @@ def create_national_day_list():
 
 
 def get_national_day_blurb():
-    facts = ""
+    facts = "The following things occurred on this date. "
     birthdays = "Today is also the birthday of "
     html_document = get_HTML_document(FACTS_URL)
     soup = BeautifulSoup(html_document, 'html.parser')
