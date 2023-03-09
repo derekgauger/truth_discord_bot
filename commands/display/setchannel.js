@@ -20,7 +20,7 @@ module.exports = {
         try {
             if (interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
                 client.addChannel(name, id, channel_id)
-                reply = "This channel has been successfully set to receive automated messages. Use /displayday, /displayblurb, and /displaymonth"
+                reply = "This channel has been successfully set to receive automated messages. Use /displayday or /displayblurb"
 
             } else {
                 reply = "You do not have permission to use this command. You need the **'Manage Server'** permission to proceed."

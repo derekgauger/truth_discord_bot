@@ -8,7 +8,6 @@ const cron = require('node-cron')
 const fs = require('fs')
 
 require("./functions/automation/day_automation")
-require("./functions/automation/month_automation")
 require("./functions/automation/blurb_automation")
 
 const token = process.env.token
@@ -54,10 +53,6 @@ client.once('ready', () => {
     const dayJob = cron.schedule("0 1 6 * * *", function () {
         client.displayDays()
         client.displayBlurb()
-    });
-
-    const monthJob = cron.schedule("0 1 6 1 * *", function () {
-        client.displayMonths()
     });
     setCommands()
 })

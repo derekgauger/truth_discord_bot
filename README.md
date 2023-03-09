@@ -13,13 +13,11 @@ Have you ever been minding your own business throughout the day and learned it's
 - Use the /setchannel command to give Truth a target automated messaging channel for your server (Automated messages will **NOT** work if this command is not executed)
 - Use the /unsetchannel command to remove automated messages from your server
 - Use the /displayday command to show the current national day celebrations
-- Use the /displaymonth command to show the current national month celebrations
 - Use the /displayblurb command to show a short paragraph about the current day
 
 **How Automation Works**
-- The national days/months I am using are pulled from "https://www.nationaltoday.com"
+- The national days I am using are pulled from "https://www.nationaltoday.com"
 - National Days are be displayed every day at 6:01 AM CST
-- National Months be displayed on the first of every month at 6:01 AM CST
 
 **How the Truth is running**
 
