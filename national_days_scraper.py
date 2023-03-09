@@ -4,9 +4,7 @@ import re
 from datetime import datetime
 import os
 
-
 today = datetime.now()
-
 current_month = today.strftime('%B')
 current_day = str(int(today.strftime("%d")))
 
@@ -16,7 +14,7 @@ PATH_TO_DAYS = "/home/ubuntu/truth_discord_bot/national_days.txt"
 PATH_TO_BLURB = "/home/ubuntu/truth_discord_bot/national_day_blurb.txt"
 # PATH_TO_DAYS = "./national_days.txt"
 # PATH_TO_BLURB = "./national_day_blurb.txt"
-
+MAX_DAY = 15
 
 def get_HTML_document(url):
     response = requests.get(url)
@@ -37,18 +35,15 @@ def remove_duplicates(list):
 
 
 def create_national_day_list():
-
     day_list = []
-
     html_document = get_HTML_document(TODAY_URL)
     soup = BeautifulSoup(html_document, 'html.parser')
-
     for i in remove_duplicates(soup.find_all('h3', attrs={'class': re.compile("^holiday-title")})):
         title = HTML_to_ascii(i.text)
+        if len(day_list) == MAX_DAY:
+            break
         if not "birthday" in title.lower():
-
             day_list.append(title)
-
     return day_list
 
 
