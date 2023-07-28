@@ -116,4 +116,5 @@ if __name__ == "__main__":
             days_file.write("{} {}\n".format(list_starter, day))
 
     with open(BLURB_STORAGE_PATH, 'w') as blurb_file:
+        blurb_file.write("Today in history...\n")
         blurb_file.write(blurb_output)
