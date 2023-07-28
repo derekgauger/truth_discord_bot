@@ -1,95 +1,119 @@
-from bs4 import BeautifulSoup
 import requests
-import re
-from datetime import datetime
 import os
+from bs4 import BeautifulSoup
 
-today = datetime.now()
-current_month = today.strftime('%B')
-current_day = str(int(today.strftime("%d")))
+FACTS_ELEM_TYPE = DATES_ELEM_TYPE = BIRTHDAYS_ELEM_TYPE = DEATHS_ELEM_TYPE = DAYS_ELEM_TYPE = "h3"
 
-TODAY_URL = "https://nationaltoday.com/{}-{}-holidays/".format(current_month.lower(), current_day)
-FACTS_URL = "https://www.thefactsite.com/day/{}-{}".format(current_month.lower(), current_day)
-PATH_TO_DAYS = "/home/ubuntu/truth_discord_bot/national_days.txt"
-PATH_TO_BLURB = "/home/ubuntu/truth_discord_bot/national_day_blurb.txt"
-# PATH_TO_DAYS = "./national_days.txt"
-# PATH_TO_BLURB = "./national_day_blurb.txt"
-MAX_DAY = 15
+FACTS_CLASS = "gb-headline-9b8b6052"
+DATES_CLASS = "gb-headline-c9c17c19"
+BIRTHDAYS_CLASS = "gb-headline-288ec7a2"
+DEATHS_CLASS = "gb-headline-343ac09b"
+DAYS_CLASS = "holiday-title"
 
-def get_HTML_document(url):
-    response = requests.get(url)
-    return response.text
+MAX_FACTS = MAX_DATES = MAX_BIRTHDAYS = MAX_DEATHS = 5
+MAX_DAYS = 15
 
+FACTS_URL = "https://www.thefactsite.com/day/today/"
+DAYS_URL = "https://nationaltoday.com/what-is-today/"
+
+directory = os.path.dirname(__file__)
+list_starter = '-'
+
+DAYS_STORAGE_PATH = directory + "/national_days.txt"
+BLURB_STORAGE_PATH = directory + "/national_day_blurb.txt"
+
+BLANK_OUTPUT_ERROR_MSG = "Something probably went wrong... Please contact your local idiot who made this script: 'dirkyg'."
 
 def HTML_to_ascii(text):
     return str(text.encode('ascii', 'ignore').decode('utf-8'))
 
+def get_html_content(url):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        html_content = response.text
+        return HTML_to_ascii(html_content)
+    except requests.exceptions.RequestException as e:
+        print("Error fetching the page: {}".format(e))
+        return ""
 
-def remove_duplicates(list):
-    filtered_list =  []
-    for element in list:
-        if element not in filtered_list:
-            filtered_list.append(element)
+def scrape_text_by_element_and_class(html_content, element_type, class_name):
+    soup = BeautifulSoup(html_content, 'html.parser')
+    elements = soup.find_all(element_type, class_=class_name)
+    text_list = [element.get_text() for element in elements]
+    return text_list
 
-    return  filtered_list
+def get_facts_output(unfinished_facts, unfinished_dates):
+    if (len(unfinished_facts) == len(unfinished_dates)) and len(unfinished_facts) != 0 and len(unfinished_dates) != 0:
+        finished_facts = list(zip(unfinished_facts, unfinished_dates))
+        fact_output = ""
+        for i, (fact, date) in enumerate(finished_facts):
+            if i != 0:
+                fact_output += " "
+            fact_output += "{} in {}.".format(fact[:-1], date)
+        return fact_output
+    else:
+        return ""
 
+def get_birthdays_output(finished_birthdays):
+    if len(finished_birthdays) != 0:
+        birthday_output = "Today is "
+        for i, birthday in enumerate(finished_birthdays):
+            if len(finished_birthdays) == 1:
+                birthday_output += "{}".format(birthday)
+            elif i == len(finished_birthdays) - 2:
+                birthday_output += "{}'s and ".format(birthday)
+            elif i == len(finished_birthdays) - 1:
+                birthday_output += "{}'s ".format(birthday)
+            else:
+                birthday_output += "{}'s, ".format(birthday)
+        birthday_output += "birthday."
+        return birthday_output
+    else:
+        return ""
 
-def create_national_day_list():
-    day_list = []
-    html_document = get_HTML_document(TODAY_URL)
-    soup = BeautifulSoup(html_document, 'html.parser')
-    for i in remove_duplicates(soup.find_all('h3', attrs={'class': re.compile("^holiday-title")})):
-        title = HTML_to_ascii(i.text)
-        if len(day_list) == MAX_DAY:
-            break
-        if not "birthday" in title.lower():
-            day_list.append(title)
-    return day_list
+def get_deaths_output(finished_deaths):
+    if len(finished_deaths) != 0:
+        death_output = "The following people died on this day: "
+        for i, death in enumerate(finished_deaths):
+            if len(finished_deaths) == 1:
+                death_output += "{}".format(death)
+            elif i == len(finished_deaths) - 2:
+                death_output += "{} and ".format(death)
+            elif i == len(finished_deaths) - 1:
+                death_output += "{} ".format(death)
+            else:
+                death_output += "{}, ".format(death)
+        death_output += "."
+        return death_output
+    else:
+        return ""
+            
 
-
-def get_national_day_blurb():
-    facts = "The following things occurred on this date. "
-    birthdays = "Today is also the birthday of "
-    html_document = get_HTML_document(FACTS_URL)
-    soup = BeautifulSoup(html_document, 'html.parser')
-    for i, element in enumerate(soup.find_all('h3')):
-        paragraph = HTML_to_ascii(element.text)
-        fact_match = re.search(r'\d+\s\s(.*)', paragraph)
-        birthday_match = re.search(r'^\s\d+\s(.*)', paragraph)
-
-        if fact_match and i % 2 == 0:
-            facts += fact_match.groups()[0] + " "
-        
-        if birthday_match:
-            name = birthday_match.groups()[0]
-            death_match = re.search(r'^- \d+\s(.*)', name)
-            if not death_match:
-                birthdays += "{}, ".format(name)
-
-    return "{}{}".format(facts, rreplace(birthdays, ",", ".", 1))
-
-def rreplace(s, old, new, count):
-     return (s[::-1].replace(old[::-1], new[::-1], count))[::-1]
-
-def format_day_list(day_list):
-    retVal = ""
-    for title in day_list:
-        retVal += " - {}\n".format(title)
+if __name__ == "__main__":
+    fact_html_content = get_html_content(FACTS_URL)
+    days_html_content = get_html_content(DAYS_URL)
     
-    return retVal
+    unfinished_facts = scrape_text_by_element_and_class(fact_html_content, FACTS_ELEM_TYPE, FACTS_CLASS)[:MAX_FACTS]
+    unfinished_dates = scrape_text_by_element_and_class(fact_html_content, DATES_ELEM_TYPE, DATES_CLASS)[:MAX_DATES]
+    finished_birthdays = scrape_text_by_element_and_class(fact_html_content, BIRTHDAYS_ELEM_TYPE, BIRTHDAYS_CLASS)[:MAX_BIRTHDAYS]
+    finished_deaths = scrape_text_by_element_and_class(fact_html_content, DEATHS_ELEM_TYPE, DEATHS_CLASS)[:MAX_DEATHS]
+    national_days = scrape_text_by_element_and_class(days_html_content, DAYS_ELEM_TYPE, DAYS_CLASS)[:MAX_DAYS]
+    facts_output = get_facts_output(unfinished_facts, unfinished_dates)
+    birthdays_output = get_birthdays_output(finished_birthdays)
+    deaths_output = get_deaths_output(finished_deaths)
+    if facts_output == "":
+        facts_output = BLANK_OUTPUT_ERROR_MSG
+    elif birthdays_output == "":
+        deaths_output = BLANK_OUTPUT_ERROR_MSG
+    elif deaths_output == "":
+        deaths_output = BLANK_OUTPUT_ERROR_MSG
     
+    blurb_output = "{} {} {}".format(facts_output, birthdays_output, deaths_output)
+    with open(DAYS_STORAGE_PATH, 'w') as days_file:
+        for i, day in enumerate(national_days):
+            list_starter = "{}.".format(i + 1)
+            days_file.write("{} {}\n".format(list_starter, day))
 
-def main():
-    day_list = create_national_day_list()
-    day_blurb = get_national_day_blurb()
-
-    if not os.path.exists(PATH_TO_BLURB):
-        open(PATH_TO_BLURB, "x")
-    
-    if not os.path.exists(PATH_TO_DAYS):
-        open(PATH_TO_DAYS, 'x')
-
-    open(PATH_TO_BLURB, 'w').write(day_blurb)
-    open(PATH_TO_DAYS, 'w').write(format_day_list(day_list))
-
-main()
+    with open(BLURB_STORAGE_PATH, 'w') as blurb_file:
+        blurb_file.write(blurb_output)
