@@ -104,10 +104,6 @@ if __name__ == "__main__":
     deaths_output = get_deaths_output(finished_deaths)
     if facts_output == "":
         facts_output = BLANK_OUTPUT_ERROR_MSG
-    elif birthdays_output == "":
-        deaths_output = BLANK_OUTPUT_ERROR_MSG
-    elif deaths_output == "":
-        deaths_output = BLANK_OUTPUT_ERROR_MSG
     
     blurb_output = "{} {} {}".format(facts_output, birthdays_output, deaths_output)
     with open(DAYS_STORAGE_PATH, 'w') as days_file:
