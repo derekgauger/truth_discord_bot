@@ -21,7 +21,7 @@ MAX_FACTS = MAX_DATES = MAX_BIRTHDAYS = MAX_DEATHS = 5
 MAX_DAYS = 15
 
 FACTS_URL = "https://www.thefactsite.com/day/today/"
-DAYS_URL = "https://nationaltoday.com/september-30-holidays/"
+DAYS_URL = "https://nationaltoday.com/what-is-today/"
 
 directory = os.path.dirname(__file__)
 list_starter = '-'
