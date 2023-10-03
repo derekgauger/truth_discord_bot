@@ -2,6 +2,13 @@ import requests
 import os
 from bs4 import BeautifulSoup
 
+ARTICLES = ["the", "a", "an"]
+PREPOSITIONS = [
+    "in", "on", "at", "by", "with", "for", "of", "to", "from",
+    "over", "under", "between", "among", "through", "around"]
+CONJUNCTIONS = ["and", "but", "or", "so", "yet", "for", "nor"]
+
+
 FACTS_ELEM_TYPE = DATES_ELEM_TYPE = BIRTHDAYS_ELEM_TYPE = DEATHS_ELEM_TYPE = DAYS_ELEM_TYPE = "h3"
 
 FACTS_CLASS = "gb-headline-9b8b6052"
@@ -14,7 +21,7 @@ MAX_FACTS = MAX_DATES = MAX_BIRTHDAYS = MAX_DEATHS = 5
 MAX_DAYS = 15
 
 FACTS_URL = "https://www.thefactsite.com/day/today/"
-DAYS_URL = "https://nationaltoday.com/what-is-today/"
+DAYS_URL = "https://nationaltoday.com/september-30-holidays/"
 
 directory = os.path.dirname(__file__)
 list_starter = '-'
@@ -37,10 +44,29 @@ def get_html_content(url):
         print("Error fetching the page: {}".format(e))
         return ""
 
+def standardize_capitalization(text_list):
+    def is_excluded(word):
+        return word in ARTICLES or word in PREPOSITIONS or word in CONJUNCTIONS
+
+    for i, text in enumerate(text_list):
+        words = text.split()
+        for j, word in enumerate(words):
+            lower_word = word.lower()
+            if is_excluded(lower_word) and j != 0:
+                words[j] = lower_word
+            else:
+                words[j] = word[0].upper() + word[1:].lower()
+        text_list[i] = " ".join(words)
+    return text_list
+
 def scrape_text_by_element_and_class(html_content, element_type, class_name):
     soup = BeautifulSoup(html_content, 'html.parser')
     elements = soup.find_all(element_type, class_=class_name)
     text_list = [element.get_text() for element in elements]
+
+    if element_type == FACTS_ELEM_TYPE:
+        text_list = standardize_capitalization(text_list)
+
     return text_list
 
 def get_facts_output(unfinished_facts, unfinished_dates):
