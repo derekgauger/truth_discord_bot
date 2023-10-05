@@ -59,12 +59,12 @@ def standardize_capitalization(text_list):
         text_list[i] = " ".join(words)
     return text_list
 
-def scrape_text_by_element_and_class(html_content, element_type, class_name):
+def scrape_text_by_element_and_class(html_content, element_type, class_name, is_national_days=False):
     soup = BeautifulSoup(html_content, 'html.parser')
     elements = soup.find_all(element_type, class_=class_name)
     text_list = [element.get_text() for element in elements]
 
-    if element_type == FACTS_ELEM_TYPE:
+    if is_national_days:
         text_list = standardize_capitalization(text_list)
 
     return text_list
@@ -122,12 +122,15 @@ if __name__ == "__main__":
     
     unfinished_facts = scrape_text_by_element_and_class(fact_html_content, FACTS_ELEM_TYPE, FACTS_CLASS)[:MAX_FACTS]
     unfinished_dates = scrape_text_by_element_and_class(fact_html_content, DATES_ELEM_TYPE, DATES_CLASS)[:MAX_DATES]
+
     finished_birthdays = scrape_text_by_element_and_class(fact_html_content, BIRTHDAYS_ELEM_TYPE, BIRTHDAYS_CLASS)[:MAX_BIRTHDAYS]
     finished_deaths = scrape_text_by_element_and_class(fact_html_content, DEATHS_ELEM_TYPE, DEATHS_CLASS)[:MAX_DEATHS]
-    national_days = scrape_text_by_element_and_class(days_html_content, DAYS_ELEM_TYPE, DAYS_CLASS)[:MAX_DAYS]
+
+    national_days = scrape_text_by_element_and_class(days_html_content, DAYS_ELEM_TYPE, DAYS_CLASS, True)[:MAX_DAYS]
     facts_output = get_facts_output(unfinished_facts, unfinished_dates)
     birthdays_output = get_birthdays_output(finished_birthdays)
     deaths_output = get_deaths_output(finished_deaths)
+
     if facts_output == "":
         facts_output = BLANK_OUTPUT_ERROR_MSG
     
