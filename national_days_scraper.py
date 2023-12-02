@@ -23,7 +23,8 @@ MAX_DAYS = 15
 
 DATE_TODAY = date.today().strftime('%B-%d').lower()
 FACTS_URL = "https://www.thefactsite.com/day/today/"
-DAYS_URL = "https://nationaltoday.com/" + DATE_TODAY + '-holidays/'
+# DAYS_URL = "https://nationaltoday.com/" + DATE_TODAY + '-holidays/'
+DAYS_URL = "https://nationaltoday.com/today/"
 
 directory = os.path.dirname(__file__)
 list_starter = '-'
@@ -32,6 +33,14 @@ DAYS_STORAGE_PATH = directory + "/national_days.txt"
 BLURB_STORAGE_PATH = directory + "/national_day_blurb.txt"
 
 BLANK_OUTPUT_ERROR_MSG = "Something probably went wrong... Please contact your local idiot who made this script: 'dirkyg'."
+
+
+def remove_duplicates(list_of_stuff):
+    non_dupes = []
+    for item in list_of_stuff:
+        if item not in non_dupes:
+            non_dupes.append(item)
+    return non_dupes
 
 def HTML_to_ascii(text):
     return str(text.encode('ascii', 'ignore').decode('utf-8'))
@@ -49,7 +58,6 @@ def get_html_content(url):
 def standardize_capitalization(text_list):
     def is_excluded(word):
         return word in ARTICLES or word in PREPOSITIONS or word in CONJUNCTIONS
-
     for i, text in enumerate(text_list):
         words = text.split()
         for j, word in enumerate(words):
