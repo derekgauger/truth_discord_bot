@@ -1,4 +1,6 @@
 'Truth' is a Discord bot that displays the national day and months celebrations.
+**Link to see how many servers this bot is in**
+https://discord.watch/applications/929121472138604614
 
 **Why did I make this?**
 
