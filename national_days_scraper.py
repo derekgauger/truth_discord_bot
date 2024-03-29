@@ -21,9 +21,10 @@ DAYS_CLASS = "holiday-title"
 MAX_FACTS = MAX_DATES = MAX_BIRTHDAYS = MAX_DEATHS = 5
 MAX_DAYS = 15
 
-DATE_TODAY = date.today().strftime('%B-%d').lower()
-FACTS_URL = f"https://www.thefactsite.com/day/{DATE_TODAY}/"
-# DAYS_URL = "https://nationaltoday.com/" + DATE_TODAY + '-holidays/'
+# DATE_TODAY = date.today().strftime('%B-%d').lower() # e.g. "january-01"
+MONTH = date.today().strftime('%B').lower()
+DAYS = int(date.today().strftime('%d'))
+FACTS_URL = f"https://www.thefactsite.com/day/{MONTH}-{DAYS}/"# DAYS_URL = "https://nationaltoday.com/" + DATE_TODAY + '-holidays/'
 DAYS_URL = "https://nationaltoday.com/today/"
 
 directory = os.path.dirname(__file__)
