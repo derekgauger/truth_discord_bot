@@ -33,8 +33,9 @@ for (const folder of functionFolders) {
 
 client.handleEvents()
 client.login(token).then(() => {
+    guild_id_list = client.guilds.cache.map(guild => guild.id)
     client.user.setPresence({
-        activities: [{ name: `the Truth | use '/info'`, type: Discord.ActivityType.Playing }],
+        activities: [{ name: `in ${guild_id_list.length} servers | '/info'`, type: Discord.ActivityType.Playing }],
         status: 'Online',
       })
 })
@@ -48,7 +49,7 @@ client.once('ready', () => {
         console.log(client.guilds.cache.get(guildId).name + " : " + guildId)
     })
     
-    console.log("The Truth will be told...")
+    console.log(`The Truth will be told... (${guild_id_list.length} servers)`)
 
     const dayJob = cron.schedule("0 1 6 * * *", function () {
         client.displayDays()
