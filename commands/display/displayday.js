@@ -44,7 +44,6 @@ module.exports = {
                 embeds: [embed]
             });
 
-            console.log('Day displayed successfully');
         } catch (error) {
             console.error('Error in displayday command:', error);
 

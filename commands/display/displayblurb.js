@@ -30,7 +30,6 @@ module.exports = {
                 content: message
             });
 
-            console.log('Blurb displayed successfully');
         } catch (error) {
             console.error('Error in displayblurb command:', error);
 
