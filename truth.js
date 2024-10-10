@@ -34,11 +34,18 @@ for (const folder of functionFolders) {
 client.handleEvents()
 client.login(token).then(() => {
     guild_id_list = client.guilds.cache.map(guild => guild.id)
+    updatePresence()
+    const presenceJob = cron.schedule("0 0 0 * * *", function () {
+        updatePresence()
+    });
+})
+
+function updatePresence() {
     client.user.setPresence({
         activities: [{ name: `in ${guild_id_list.length} servers | '/info'`, type: Discord.ActivityType.Playing }],
         status: 'Online',
-      })
-})
+    })
+}
 
 client.handleCommands()
 
