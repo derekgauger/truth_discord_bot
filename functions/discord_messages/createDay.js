@@ -1,53 +1,47 @@
-const fs = require('fs')
+const fs = require('fs');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = (client) => {
     client.createDay = async () => {
-        const today = new Date()
+        const today = new Date();
 
-        let date = getDateString(today)
+        let date = getDateString(today);
 
-        const month = today.toLocaleString('default', { month: 'long' })
-        const day = today.getDate()
+        const month = today.toLocaleString('default', { month: 'long' });
+        const day = today.getDate();
 
-        var text = "\n" + fs.readFileSync("national_days.txt").toString()
+        var text = "\n" + fs.readFileSync("national_days.txt").toString();
 
-        const embed = {
-            color: 0xFF0000,
-            title: 'National Days',
-            url: 'https://nationaltoday.com/what-is-today/',
-            author: {
+        const embed = new EmbedBuilder()
+            .setColor(0xFF0000)
+            .setTitle('National Days')
+            .setURL('https://nationaltoday.com/today/')
+            .setAuthor({
                 name: 'Truth - ' + date,
-                icon_url: "https://i.imgur.com/6NtiiP4.png",
-                url: 'https://nationaltoday.com/what-is-today/',
-            },
-            thumbnail: {
-                url: "https://i.imgur.com/6NtiiP4.png",
-            },
-            fields: [
-                {
-                    name: 'Current National Days',
-                    value: text,
-                },
-            ],
-            timestamp: today,
-            footer: {
+                iconURL: "https://i.imgur.com/6NtiiP4.png",
+                url: 'https://nationaltoday.com/today/'
+            })
+            .setThumbnail("https://i.imgur.com/6NtiiP4.png")
+            .addFields({
+                name: 'Current National Days',
+                value: text
+            })
+            .setTimestamp(today)
+            .setFooter({
                 text: 'Truth by Dirk',
-                icon_url: "https://i.imgur.com/6NtiiP4.png",
-            },
-        };
+                iconURL: "https://i.imgur.com/6NtiiP4.png"
+            });
 
-        return embed
+        return embed;
     }
 }
 
-
 function getDateString(today) {
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const yyyy = today.getFullYear();
 
-    const dd = String(today.getDate()).padStart(2, '0')
-    const mm = String(today.getMonth() + 1).padStart(2, '0')
-    const yyyy = today.getFullYear()
-
-    const date = mm + '/' + dd + '/' + yyyy
+    const date = mm + '/' + dd + '/' + yyyy;
 
     return date;
 }

@@ -38,7 +38,6 @@ module.exports = {
                     .setDescription('Failed to create day information. Please try again later.');
             }
 
-            // Edit the deferred reply with the embed
             await interaction.editReply({
                 content: "Enjoy your day!",
                 embeds: [embed]

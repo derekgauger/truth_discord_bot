@@ -15,26 +15,18 @@ module.exports = {
             if (!client.createBlurb) {
                 throw new Error('createBlurb function is not defined on the client');
             }
-
             const message = client.createBlurb();
-            
             if (!message) {
                 throw new Error('Failed to create blurb message');
             }
-
             console.log(`'${interaction.user.username}' used /displayblurb in '${interaction.guild ? interaction.guild.name : 'DM'}'`);
-
             await interaction.deferReply();
-
             await interaction.editReply({
                 content: message
             });
-
         } catch (error) {
             console.error('Error in displayblurb command:', error);
-
             const errorMessage = 'An error occurred while displaying the blurb. Please try again later.';
-
             if (error.code === 10062) {
                 try {
                     await interaction.followUp({
