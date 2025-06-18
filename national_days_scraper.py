@@ -25,7 +25,7 @@ MAX_DAYS = 15
 MONTH = date.today().strftime('%B').lower()
 DAYS = int(date.today().strftime('%d'))
 FACTS_URL = f"https://www.thefactsite.com/day/{MONTH}-{DAYS}/"# DAYS_URL = "https://nationaltoday.com/" + DATE_TODAY + '-holidays/'
-DAYS_URL = "https://nationaltoday.com/today/"
+DAYS_URL = f"https://nationaltoday.com/{MONTH}-{DAYS}/"
 
 directory = os.path.dirname(__file__)
 list_starter = '-'
@@ -130,7 +130,7 @@ def get_deaths_output(finished_deaths):
 if __name__ == "__main__":
     fact_html_content = get_html_content(FACTS_URL)
     days_html_content = get_html_content(DAYS_URL)
-    
+
     unfinished_facts = scrape_text_by_element_and_class(fact_html_content, FACTS_ELEM_TYPE, FACTS_CLASS)[:MAX_FACTS]
     unfinished_dates = scrape_text_by_element_and_class(fact_html_content, DATES_ELEM_TYPE, DATES_CLASS)[:MAX_DATES]
 
