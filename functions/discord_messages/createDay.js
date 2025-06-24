@@ -17,19 +17,26 @@ module.exports = (client) => {
             .setTitle('National Days')
             .setURL('https://nationaltoday.com/today/')
             .setAuthor({
-                name: 'Truth - ' + date,
-                iconURL: "https://i.imgur.com/6NtiiP4.png",
-                url: 'https://nationaltoday.com/today/'
+            name: 'Truth - ' + date,
+            iconURL: "https://i.imgur.com/6NtiiP4.png",
+            url: 'https://nationaltoday.com/today/'
             })
             .setThumbnail("https://i.imgur.com/6NtiiP4.png")
-            .addFields({
+            .addFields(
+            {
                 name: 'Current National Days',
                 value: text
-            })
+            },
+            {
+                name: '☕ Buy Me a Coffee (Help Cover Hosting Fees)',
+                value: '[Support the developer](https://coff.ee/dirkyg)',
+                inline: false
+            }
+            )
             .setTimestamp(today)
             .setFooter({
-                text: 'Truth by Dirk',
-                iconURL: "https://i.imgur.com/6NtiiP4.png"
+            text: 'Truth by Dirk',
+            iconURL: "https://i.imgur.com/6NtiiP4.png"
             });
 
         return embed;
