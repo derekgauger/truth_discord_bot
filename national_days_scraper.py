@@ -207,7 +207,6 @@ def get_deaths_output(finished_deaths):
 
 
 if __name__ == "__main__":
-    print(DAYS_URL)
     fact_html_content = get_html_content(FACTS_URL)
 
     unfinished_facts = scrape_text_by_element_and_class(
