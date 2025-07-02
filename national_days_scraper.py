@@ -234,10 +234,16 @@ if __name__ == "__main__":
         facts_output = BLANK_OUTPUT_ERROR_MSG
 
     blurb_output = "{} {} {}".format(facts_output, birthdays_output, deaths_output)
-    with open(DAYS_STORAGE_PATH, "w") as days_file:
-        for i, day in enumerate(national_days):
-            list_starter = "{}.".format(i + 1)
-            days_file.write("{} {}\n".format(list_starter, day))
+    if not national_days:
+        with open(DAYS_STORAGE_PATH, "w") as days_file:
+            days_file.write(
+                "Something went wrong, please contact 'dirkyg' on Discord!\n"
+            )
+    else:
+        with open(DAYS_STORAGE_PATH, "w") as days_file:
+            for i, day in enumerate(national_days):
+                list_starter = "{}.".format(i + 1)
+                days_file.write("{} {}\n".format(list_starter, day))
 
     with open(BLURB_STORAGE_PATH, "w") as blurb_file:
         blurb_file.write("Today in history...\n")
