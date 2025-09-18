@@ -24,14 +24,14 @@ PREPOSITIONS = [
 CONJUNCTIONS = ["and", "but", "or", "so", "yet", "for", "nor"]
 
 
-FACTS_ELEM_TYPE = DATES_ELEM_TYPE = BIRTHDAYS_ELEM_TYPE = DEATHS_ELEM_TYPE = (
-    DAYS_ELEM_TYPE
-) = "h3"
+FACTS_ELEM_TYPE = BIRTHDAYS_ELEM_TYPE = DAYS_ELEM_TYPE = "h4"
 
-FACTS_CLASS = "gb-headline-9b8b6052"
-DATES_CLASS = "gb-headline-c9c17c19"
-BIRTHDAYS_CLASS = "gb-headline-288ec7a2"
-DEATHS_CLASS = "gb-headline-343ac09b"
+DATES_ELEM_TYPE = DEATHS_ELEM_TYPE = "h3"
+
+FACTS_CLASS = "gb-text-5b7585a8"
+DATES_CLASS = "gb-text-93bf8f3a"
+BIRTHDAYS_CLASS = "gb-text-751f07a1"
+DEATHS_CLASS = "gb-text-75c30d7c"
 DAYS_CLASS = "card-holiday-title"
 DAYS_CLASS2 = "holiday-title"
 
