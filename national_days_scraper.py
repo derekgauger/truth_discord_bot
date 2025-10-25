@@ -51,7 +51,8 @@ list_starter = "-"
 DAYS_STORAGE_PATH = directory + "/national_days.txt"
 BLURB_STORAGE_PATH = directory + "/national_day_blurb.txt"
 
-BLANK_OUTPUT_ERROR_MSG = "Something probably went wrong... Please contact your local idiot who made this script: 'dirkyg'."
+# BLANK_OUTPUT_ERROR_MSG = "Something probably went wrong... Please contact your local idiot who made this script: 'dirkyg'."
+BLANK_OUTPUT_ERROR_MSG = "Nothing interesting happened. Move along. (This feature is currently broken, I am working on fixing it!)"
 
 
 def remove_duplicates(list_of_stuff):
