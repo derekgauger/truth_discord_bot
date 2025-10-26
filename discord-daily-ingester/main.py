@@ -7,17 +7,16 @@ import os
 # --- Configuration ---
 FIRESTORE_DAILY_COLLECTION = "daily-content"  # Name of the Firestore collection
 
-# Initialize Firestore client globally.
-db = firestore.Client()
-
 
 @functions_framework.http
-def ingest_facts(request):
+def ingest_daily_content(request):
     """
     HTTP Cloud Function that fetches "Today in History" facts from Muffinlabs API
     and stores them in Firestore with a structured format (events, births, deaths).
     """
     print("Starting Muffinlabs facts ingestion...")
+    # Initialize Firestore client globally.
+    db = firestore.Client()
 
     today = datetime.now()
     today_str_for_doc_id = today.strftime("%Y-%m-%d")  # e.g., "2023-10-27"
