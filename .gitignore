@@ -130,3 +130,9 @@ dist
 .pnp.*
 
 # Added by Derek
+__pycache__/
+*.py[cod]
+*$py.class
+.mypy_cache/
+.pytest_cache/
+.xlsx

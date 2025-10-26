@@ -1,0 +1,3 @@
+functions-framework
+requests
+google-cloud-firestore
