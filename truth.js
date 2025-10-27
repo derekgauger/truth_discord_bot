@@ -43,7 +43,7 @@ client.handleEvents()
 client.login(token).then(() => {
     guild_id_list = client.guilds.cache.map(guild => guild.id)
     updatePresence()
-    const presenceJob = cron.schedule("0 0 0 * * *", function () {
+    const presenceJob = cron.schedule("0 1 6 * * *", function () {
         updatePresence()
     });
 })
