@@ -33,7 +33,7 @@ module.exports = (client) => {
 
             if (!docSnap.exists) {
                 console.log(`No daily content found for ${today_str_for_doc_id}.`);
-                return "I could not find the facts for today. The daily facts ingestion might not have run yet. Please check again later!";
+                return "I could not find the facts for today. Something might have gone wrong! Please contact the developer 'dirkyg' to investigate.";
             }
 
             const data = docSnap.data();

@@ -19,7 +19,22 @@ module.exports = (client) => {
 
         if (!docSnap.exists) {
             console.log(`No daily content found for ${today_str_for_doc_id}.`);
-            return "I could not find the facts for today. The daily facts ingestion might not have run yet. Please check again later!";
+            
+            const errorEmbed = new EmbedBuilder()
+            .setColor(0xFF0000)
+            .setTitle('Oops! Something went wrong')
+            .setDescription('I could not find the national days for today!')
+            .addFields({
+                name: '🔧 Need help?',
+                value: 'Please contact the developer **dirkyg** to fix this issue.'
+            })
+            .setTimestamp()
+            .setFooter({
+                text: 'Truth by Dirk',
+                iconURL: "https://i.imgur.com/6NtiiP4.png"
+            });
+            
+            return errorEmbed;
         }
 
         const data = docSnap.data();
