@@ -23,6 +23,7 @@ module.exports = (client) => {
             const item = {
                 name: guildName,
                 channelId: channelId,
+                guildId: guildId,
                 created_on: admin.firestore.FieldValue.serverTimestamp()
             };
             
