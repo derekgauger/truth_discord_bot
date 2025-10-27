@@ -1,41 +1,83 @@
-const AWS = require('aws-sdk');
-const Discord = require('discord.js');
+const admin = require("firebase-admin");
 
-require('dotenv').config();
+// --- Configuration Constant ---
+const FIRESTORE_CHANNEL_COLLECTION = "discord-channels";
 
-AWS.config.update({
-    region: "us-east-2",
-    accessKeyId: process.env.db_key_id,
-    secretAccessKey: process.env.db_secret_access_key,
-});
+
+// --- Firebase Initialization (via Service Account or Environment) ---
+// Note: This block ensures the Admin SDK is initialized once.
+try {
+    admin.initializeApp();
+} catch (e) {
+    // Safely ignore the error if the app is already initialized.
+    if (!/already exists/.test(e.message)) {
+        console.error("Firebase Admin SDK Initialization Error:", e);
+        throw e;
+    }
+}
+const db = admin.firestore();
+
 
 module.exports = (client) => {
+    /**
+     * Registers a Discord channel ID to a Guild ID in Firestore for automated messages.
+     * It uses the Guild ID as the document ID for efficient lookup.
+     * @param {string} guildName - The name of the Discord guild (server).
+     * @param {string} guildId - The unique ID of the Discord guild.
+     * @param {string} channelId - The ID of the channel where the blurb should be posted.
+     * @returns {Promise<string>} A promise that resolves with a success message or rejects with an error.
+     */
+    client.addChannel = async (guildName, guildId, channelId) => {
+        if (!guildName || !guildId || !channelId) {
+            return Promise.reject(new Error('Missing required parameters: guildName, guildId, or channelId'));
+        }
+
+        try {
+            const docRef = db.collection(FIRESTORE_CHANNEL_COLLECTION).doc(guildId);
+            const item = {
+                name: guildName,
+                channelId: channelId,
+                created_on: admin.firestore.FieldValue.serverTimestamp()
+            };
+            
+            // Use set() with merge: true to update the document if it exists, or create it if it doesn't (upsert behavior).
+            await docRef.set(item, { merge: true });
+
+            console.log(`Server: '${guildName}' has been added/updated in Firestore`);
+            return `Server: '${guildName}' has been successfully configured to channel ${channelId}.`;
+        } catch (error) {
+            console.error(`Error configuring server '${guildName}' in Firestore:`, error);
+            return Promise.reject(new Error(`Unable to save record for server '${guildName}'. Error: ${error.message}`));
+        }
+    };
+
+    /**
+     * Checks if a channel configuration exists for a given Guild ID in Firestore.
+     * @param {string} guildId - The unique ID of the Discord guild.
+     * @returns {Promise<boolean>} A promise that resolves to true if the channel exists, false otherwise.
+     */
     client.getChannel = async (guildId) => {
         if (!guildId) {
             throw new Error('Missing required parameter: guildId');
         }
 
-        const params = {
-            Key: {
-                id: `${guildId}`
-            },
-            TableName: 'truth-discord-info'
-        };
-        
-        const docClient = new AWS.DynamoDB.DocumentClient();
-
         try {
-            const result = await docClient.get(params).promise();
+            const docRef = db.collection(FIRESTORE_CHANNEL_COLLECTION).doc(guildId);
+            const docSnap = await docRef.get();
             
-            if (result.Item !== undefined && result.Item !== null) {
-                console.log(`Channel found for guild ID: ${guildId}`);
-                return true;
+            const exists = docSnap.exists;
+
+            if (exists) {
+                console.log(`Channel configuration found for guild ID: ${guildId}`);
             } else {
-                console.log(`No channel found for guild ID: ${guildId}`);
-                return false;
+                console.log(`No channel configuration found for guild ID: ${guildId}`);
             }
+
+            // Return true if the document exists, false otherwise.
+            return exists;
         } catch (error) {
             console.error(`Error checking channel for guild ID ${guildId}:`, error);
+            // Throw a new error to be caught by the calling function/command handler
             throw new Error(`Failed to check channel existence: ${error.message}`);
         }
     };

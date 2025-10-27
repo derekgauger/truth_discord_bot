@@ -31,11 +31,6 @@ CONJUNCTIONS = ["and", "but", "or", "so", "yet", "for", "nor"]
 DAYS_ELEM_TYPE = "h3"
 DAYS_CLASS = "card-holiday-title"
 DAYS_CLASS2 = "holiday-title"
-# MAX_DAYS = 15
-
-
-# --- Helper Functions for Web Scraping ---
-
 
 def HTML_to_ascii(text):
     """Encodes HTML content to ASCII, ignoring non-ASCII characters."""
@@ -133,6 +128,27 @@ def get_national_days_with_fallback(days_url1, days_url2):
     # If all attempts failed
     return []
 
+# --- Custom Helper to Transform Muffinlabs Data ---
+def transform_history_data(data_list):
+    """
+    Transforms the Muffinlabs list of objects into the desired Firestore format.
+    Muffinlabs structure: [{'year': 'YYYY', 'text': '...', 'links': [{'title': '...', 'link': '...'}]}]
+    Desired structure: [{'year': 'YYYY', 'fact': '...', 'link': '...'}]
+    """
+    transformed_list = []
+    for item in data_list:
+        # Safely extract the link if it exists. Muffinlabs puts links in an array, 
+        # so we take the first one if the array is present and has elements.
+        link = item.get('links', [])
+        first_link = link[0].get('link') if link and link[0] and link[0].get('link') else ""
+        
+        transformed_list.append({
+            "year": item.get('year', ''),
+            "fact": item.get('text', ''),
+            "link": first_link
+        })
+    return transformed_list
+
 
 # --- Main Cloud Function ---
 
@@ -141,7 +157,8 @@ def get_national_days_with_fallback(days_url1, days_url2):
 def ingest_daily_content(request):
     """
     HTTP Cloud Function that fetches "Today in History" facts from Muffinlabs API
-     AND "National Days" from nationaltoday.com, then stores them in Firestore.
+      AND "National Days" from nationaltoday.com, then stores them in Firestore
+      in the new structured format.
     """
     print("Starting daily content ingestion (Muffinlabs and National Today)...")
 
@@ -170,20 +187,13 @@ def ingest_daily_content(request):
 
         if "data" in history_data and history_data["data"]:
             if "Events" in history_data["data"]:
-                events_list = [
-                    f"{event['year']}: {event['text']}"
-                    for event in history_data["data"]["Events"]
-                ]
+                events_list = transform_history_data(history_data["data"]["Events"])
+
             if "Births" in history_data["data"]:
-                births_list = [
-                    f"{birth['year']}: {birth['text']}"
-                    for birth in history_data["data"]["Births"]
-                ]
+                births_list = transform_history_data(history_data["data"]["Births"])
+
             if "Deaths" in history_data["data"]:
-                deaths_list = [
-                    f"{death['year']}: {death['text']}"
-                    for death in history_data["data"]["Deaths"]
-                ]
+                deaths_list = transform_history_data(history_data["data"]["Deaths"])
 
             print(
                 f"Successfully fetched {len(events_list)} events, {len(births_list)} births, {len(deaths_list)} deaths from Muffinlabs."
@@ -217,7 +227,7 @@ def ingest_daily_content(request):
             "events": events_list,
             "births": births_list,
             "deaths": deaths_list,
-            "national_days": national_days_list,  # New field
+            "national_days": national_days_list,
             "last_updated": firestore.SERVER_TIMESTAMP,
         }
 

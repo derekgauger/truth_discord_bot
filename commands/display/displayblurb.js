@@ -15,14 +15,14 @@ module.exports = {
             if (!client.createBlurb) {
                 throw new Error('createBlurb function is not defined on the client');
             }
-            const message = client.createBlurb();
+            const message = await client.createBlurb();
             if (!message) {
                 throw new Error('Failed to create blurb message');
             }
             console.log(`'${interaction.user.username}' used /displayblurb in '${interaction.guild ? interaction.guild.name : 'DM'}'`);
             await interaction.deferReply();
             await interaction.editReply({
-                content: message
+                content: String(message)
             });
         } catch (error) {
             console.error('Error in displayblurb command:', error);

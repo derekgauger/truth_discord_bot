@@ -3,12 +3,12 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 from datetime import datetime
-import os # New import for environment variables
-from dotenv import load_dotenv # New import for .env file
-import boto3 # New import for AWS SDK
+import os 
+from dotenv import load_dotenv 
+import boto3 
 
 # --- Load Environment Variables ---
-load_dotenv() # This loads the .env file
+load_dotenv() 
 
 # --- Configuration Variables ---
 # Firebase Config
@@ -85,17 +85,18 @@ def get_data_from_dynamodb(table):
 def upload_dynamodb_to_firestore(dynamodb_items, collection_name):
     """
     Uploads DynamoDB items to a Firestore collection.
-    Each document will have an auto-generated ID and contain 'channelId', 'name', and 'created_on' fields.
+    Uses the DynamoDB 'channelId' as the Firestore document ID.
     """
     print(f"\nAttempting to upload {len(dynamodb_items)} items from DynamoDB to Firestore collection '{collection_name}'...")
     uploaded_count = 0
     for index, item in enumerate(dynamodb_items):
-        # DynamoDB typically returns numbers, but we want strings for channelId
-        channel_id_value = str(item.get('channelId', '')).strip() # Use .get with default for safety
-        name_value = str(item.get('name', '')).strip()           # Use .get with default for safety
-
-        # Validate that channelId and name are not empty after stripping whitespace
-        if channel_id_value and name_value:
+        # DynamoDB 'channelId' field will be used as both the document ID and a field value.
+        channel_id_doc_id = str(item.get('channelId', '')).strip() 
+        channel_id_value = channel_id_doc_id 
+        name_value = str(item.get('name', '')).strip() 
+        
+        # Validate that the necessary keys are present (channel ID is required for the document ID)
+        if channel_id_doc_id and name_value:
             document_data = {
                 'channelId': channel_id_value,
                 'name': name_value,
@@ -103,11 +104,12 @@ def upload_dynamodb_to_firestore(dynamodb_items, collection_name):
             }
 
             try:
-                doc_ref = db.collection(collection_name).add(document_data)
-                print(f"Uploaded document with auto-ID '{doc_ref[1].id}' (channelId: '{channel_id_value}', name: '{name_value}')")
+                # Use .document(channel_id_doc_id).set() to explicitly set the document ID
+                db.collection(collection_name).document(channel_id_doc_id).set(document_data)
+                print(f"Uploaded document with ID '{channel_id_doc_id}' (name: '{name_value}')")
                 uploaded_count += 1
             except Exception as e:
-                print(f"Error uploading document for channelId '{channel_id_value}' (DynamoDB item {index+1}): {e}")
+                print(f"Error uploading document for Channel ID '{channel_id_doc_id}' (DynamoDB item {index+1}): {e}")
         else:
             print(f"Skipping DynamoDB item {index+1} due to missing or empty 'channelId' or 'name'. Item data: {item}")
 
