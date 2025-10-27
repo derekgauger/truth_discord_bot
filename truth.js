@@ -67,7 +67,7 @@ client.once('ready', () => {
     console.log(`The Truth will be told... (${guild_id_list.length} servers)`)
 
     // 0 1 6 * * *
-    const dayJob = cron.schedule("0 1 6 * * *", function () {
+    const dayJob = cron.schedule("0 1 8 * * *", function () {
         client.displayDailyContent()
     });
     setCommands()

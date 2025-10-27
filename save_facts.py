@@ -25,6 +25,7 @@ DB_SECRET_ACCESS_KEY = os.getenv("db_secret_access_key")
 
 # --- Initialize Firebase ---
 try:
+    # Use standard spaces instead of non-breaking spaces (\xa0)
     cred = credentials.Certificate(SERVICE_ACCOUNT_KEY_PATH)
     firebase_admin.initialize_app(cred)
     db = firestore.client()
@@ -36,6 +37,7 @@ except Exception as e:
 
 # --- Initialize DynamoDB Client ---
 try:
+    # Use standard spaces instead of non-breaking spaces (\xa0)
     if DB_KEY_ID and DB_SECRET_ACCESS_KEY:
         dynamodb = boto3.resource(
             'dynamodb',
@@ -85,33 +87,40 @@ def get_data_from_dynamodb(table):
 def upload_dynamodb_to_firestore(dynamodb_items, collection_name):
     """
     Uploads DynamoDB items to a Firestore collection.
-    Uses the DynamoDB 'channelId' as the Firestore document ID.
+    
+    Uses the DynamoDB 'id' (the primary key for the configuration) 
+    as the Firestore document ID and includes 'channelId' as a separate field.
     """
     print(f"\nAttempting to upload {len(dynamodb_items)} items from DynamoDB to Firestore collection '{collection_name}'...")
     uploaded_count = 0
     for index, item in enumerate(dynamodb_items):
-        # DynamoDB 'channelId' field will be used as both the document ID and a field value.
-        channel_id_doc_id = str(item.get('channelId', '')).strip() 
-        channel_id_value = channel_id_doc_id 
-        name_value = str(item.get('name', '')).strip() 
+        # 1. Use the DynamoDB ID (assumed to be 'id') as the Firestore document ID and the new field.
+        # NOTE: If your DynamoDB primary key is named differently, you MUST change 'id' below to match.
+        guild_id_doc_id = str(item.get('id', '')).strip() 
         
-        # Validate that the necessary keys are present (channel ID is required for the document ID)
-        if channel_id_doc_id and name_value:
+        # 2. Extract remaining fields (channelId is now just a field)
+        channel_id_value = str(item.get('channelId', '')).strip()
+        name_value = str(item.get('name', '')).strip()
+        
+        # Validate that the necessary keys are present (Guild ID is now required for the document ID)
+        if guild_id_doc_id and channel_id_value and name_value:
             document_data = {
-                'channelId': channel_id_value,
+                'guildId': guild_id_doc_id, # Field: new document ID (Guild ID)
+                'channelId': channel_id_value, # Field: old document ID (Channel ID)
                 'name': name_value,
                 'created_on': firestore.SERVER_TIMESTAMP
             }
 
             try:
-                # Use .document(channel_id_doc_id).set() to explicitly set the document ID
-                db.collection(collection_name).document(channel_id_doc_id).set(document_data)
-                print(f"Uploaded document with ID '{channel_id_doc_id}' (name: '{name_value}')")
+                # Use .document(guild_id_doc_id).set() to explicitly set the document ID
+                db.collection(collection_name).document(guild_id_doc_id).set(document_data)
+                print(f"Uploaded document with ID (Guild ID) '{guild_id_doc_id}' (channel: '{channel_id_value}')")
                 uploaded_count += 1
             except Exception as e:
-                print(f"Error uploading document for Channel ID '{channel_id_doc_id}' (DynamoDB item {index+1}): {e}")
+                print(f"Error uploading document for Guild ID '{guild_id_doc_id}' (DynamoDB item {index+1}): {e}")
         else:
-            print(f"Skipping DynamoDB item {index+1} due to missing or empty 'channelId' or 'name'. Item data: {item}")
+            # Updated skip message to reflect the new primary requirement
+            print(f"Skipping DynamoDB item {index+1} due to missing or empty required fields (Guild ID, Channel ID, or Name). Item data: {item}")
 
     print(f"\nDynamoDB to Firestore upload complete. Total documents uploaded: {uploaded_count}")
 
