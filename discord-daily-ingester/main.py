@@ -150,9 +150,6 @@ def transform_history_data(data_list):
     return transformed_list
 
 
-# --- Main Cloud Function ---
-
-
 @functions_framework.http
 def ingest_daily_content(request):
     """
