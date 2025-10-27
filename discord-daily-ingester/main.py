@@ -1,6 +1,6 @@
 import functions_framework
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 from google.cloud import firestore
 from bs4 import BeautifulSoup
 
@@ -32,6 +32,7 @@ DAYS_ELEM_TYPE = "h3"
 DAYS_CLASS = "card-holiday-title"
 DAYS_CLASS2 = "holiday-title"
 
+
 def HTML_to_ascii(text):
     """Encodes HTML content to ASCII, ignoring non-ASCII characters."""
     return str(text.encode("ascii", "ignore").decode("utf-8"))
@@ -40,8 +41,6 @@ def HTML_to_ascii(text):
 def get_html_content(url):
     """Fetches HTML content from a URL using requests."""
     try:
-        # Use exponential backoff for robustness, although not fully implemented here,
-        # it's good practice for Cloud Functions that rely on external APIs/sites.
         response = requests.get(url, timeout=10)  # Set a timeout for external requests
         response.raise_for_status()
         html_content = response.text
@@ -128,6 +127,7 @@ def get_national_days_with_fallback(days_url1, days_url2):
     # If all attempts failed
     return []
 
+
 # --- Custom Helper to Transform Muffinlabs Data ---
 def transform_history_data(data_list):
     """
@@ -137,35 +137,37 @@ def transform_history_data(data_list):
     """
     transformed_list = []
     for item in data_list:
-        # Safely extract the link if it exists. Muffinlabs puts links in an array, 
+        # Safely extract the link if it exists. Muffinlabs puts links in an array,
         # so we take the first one if the array is present and has elements.
-        link = item.get('links', [])
-        first_link = link[0].get('link') if link and link[0] and link[0].get('link') else ""
-        
-        transformed_list.append({
-            "year": item.get('year', ''),
-            "fact": item.get('text', ''),
-            "link": first_link
-        })
+        link = item.get("links", [])
+        first_link = (
+            link[0].get("link") if link and link[0] and link[0].get("link") else ""
+        )
+
+        transformed_list.append(
+            {
+                "year": item.get("year", ""),
+                "fact": item.get("text", ""),
+                "link": first_link,
+            }
+        )
     return transformed_list
 
 
-@functions_framework.http
-def ingest_daily_content(request):
+# --- Function to handle ingestion for a single specific date ---
+def ingest_single_day_content(db, target_date):
     """
-    HTTP Cloud Function that fetches "Today in History" facts from Muffinlabs API
-      AND "National Days" from nationaltoday.com, then stores them in Firestore
-      in the new structured format.
+    Fetches and stores daily content (History and National Days) for a specific date object.
     """
-    print("Starting daily content ingestion (Muffinlabs and National Today)...")
+    today_str_for_doc_id = target_date.strftime("%Y-%m-%d")  # e.g., "2025-10-27"
+    month_name = target_date.strftime(
+        "%B"
+    ).lower()  # e.g., "october" (for National Today)
+    # Using #m for no leading zero on month number (e.g., 10 instead of 010)
+    month_num = target_date.strftime("%#m")
+    day = target_date.strftime("%d")  # e.g., "27"
 
-    # Initialize Firestore client
-    db = firestore.Client()
-
-    today = datetime.now()
-    today_str_for_doc_id = today.strftime("%Y-%m-%d")  # e.g., "2023-10-27"
-    month = today.strftime("%B").lower()
-    day = today.strftime("%d")
+    print(f"\nProcessing date: {today_str_for_doc_id}")
 
     # Initialize data lists
     events_list = []
@@ -174,7 +176,8 @@ def ingest_daily_content(request):
     national_days_list = []
 
     # --- 1. Fetch Today in History (Muffinlabs API) ---
-    muffinlabs_api_url = f"https://history.muffinlabs.com/date"
+    # Using the specific month/day parameters based on your request
+    muffinlabs_api_url = f"https://history.muffinlabs.com/date/{month_num}/{day}"
     print(f"Fetching historical data from {muffinlabs_api_url}...")
 
     try:
@@ -182,6 +185,7 @@ def ingest_daily_content(request):
         response.raise_for_status()
         history_data = response.json()
 
+        # Muffinlabs API uses keys like 'Events', 'Births', 'Deaths'
         if "data" in history_data and history_data["data"]:
             if "Events" in history_data["data"]:
                 events_list = transform_history_data(history_data["data"]["Events"])
@@ -198,13 +202,11 @@ def ingest_daily_content(request):
 
     except requests.exceptions.RequestException as e:
         print(f"Error fetching Today in History from Muffinlabs: {e}")
-        # Continue execution to attempt national days scraping even if history fails
     except Exception as e:
         print(f"An unexpected error occurred during Muffinlabs processing: {e}")
-        # Continue execution
 
     # --- 2. Fetch National Days (Web Scraping) ---
-    days_url1 = f"https://nationaltoday.com/{month}-{day}/"
+    days_url1 = f"https://nationaltoday.com/{month_name}-{day}/"
     days_url2 = "https://nationaltoday.com/today/"
     print(f"Attempting to scrape national days from {days_url1} and {days_url2}...")
 
@@ -213,7 +215,6 @@ def ingest_daily_content(request):
         print(f"Successfully scraped {len(national_days_list)} national days.")
     except Exception as e:
         print(f"An error occurred during national days scraping: {e}")
-        # Continue execution with an empty list
 
     # --- 3. Store in Firestore ---
 
@@ -234,16 +235,39 @@ def ingest_daily_content(request):
             )
             # Use set(..., merge=True) to safely update/create the document
             doc_ref.set(document_data, merge=True)
-            print(
-                f"Successfully stored daily content for {today_str_for_doc_id} in Firestore (Historical facts + National Days)."
-            )
-            return (
-                f"Daily content ingestion complete for {today_str_for_doc_id}. Days: {len(national_days_list)}",
-                200,
-            )
+            print(f"Successfully stored daily content for {today_str_for_doc_id}.")
+            return f"Ingestion complete for {today_str_for_doc_id}"
         except Exception as e:
-            print(f"Error storing data in Firestore: {e}")
-            return f"Error during Firestore storage: {e}", 500
+            print(f"Error storing data for {today_str_for_doc_id} in Firestore: {e}")
+            return f"Error during Firestore storage for {today_str_for_doc_id}: {e}"
     else:
-        print("No data (historical or national days) fetched to store in Firestore.")
-        return "No data fetched, nothing to store.", 200
+        print(f"No data fetched for {today_str_for_doc_id}.")
+        return f"No data fetched for {today_str_for_doc_id}."
+
+
+@functions_framework.http
+def ingest_daily_content(request):
+    """
+    HTTP Cloud Function that fetches and stores daily content for TODAY and the next two days.
+    This provides a 3-day buffer in Firestore.
+    """
+    print("Starting 3-day daily content ingestion...")
+
+    # Initialize Firestore client
+    db = firestore.Client()
+    results = []
+
+    # Get the starting date (datetime.now() uses the Cloud Function's default timezone, usually UTC)
+    today = datetime.now()
+
+    # Loop for today (0), tomorrow (1), and the day after tomorrow (2)
+    for i in range(3):
+        target_date = today + timedelta(days=i)
+
+        # Call the refactored function to process and store data for the target date
+        result = ingest_single_day_content(db, target_date)
+        results.append(result)
+
+    final_message = f"3-Day Ingestion complete. Results: [{'; '.join(results)}]"
+    print(final_message)
+    return final_message, 200
