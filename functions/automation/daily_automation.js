@@ -1,24 +1,8 @@
 const Discord = require('discord.js');
 const admin = require("firebase-admin");
 
-// --- Configuration Constants ---
 const FIRESTORE_CHANNEL_COLLECTION = "discord-channels";
-
-
-// --- Firebase Initialization ---
-// Initialize Admin SDK globally if not already done.
-// This is done once when the file is loaded.
-try {
-    admin.initializeApp();
-} catch (e) {
-    // Safely ignore the error if the app is already initialized.
-    if (!/already exists/.test(e.message)) {
-        console.error("Firebase Admin SDK Initialization Error:", e);
-        throw e;
-    }
-}
 const db = admin.firestore();
-
 
 module.exports = (client) => {
     /**

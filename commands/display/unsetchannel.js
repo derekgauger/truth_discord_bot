@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits, BaseGuildTextChannel, } = require('discord.js')
-require('../../functions/dynamodb/removeChannel')
-require('../../functions/dynamodb/getChannel')
+require('../../functions/firestore/removeChannel')
+require('../../functions/firestore/getChannel')
 
 module.exports = {
     data: new SlashCommandBuilder()

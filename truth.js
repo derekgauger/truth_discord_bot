@@ -1,14 +1,21 @@
 const Discord = require('discord.js')
 const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v10");
+const admin = require("firebase-admin");
 require('dotenv').config();
-const AWS = require('aws-sdk')
 
 const cron = require('node-cron')
 const fs = require('fs')
 
-require("./functions/automation/day_automation")
-require("./functions/automation/blurb_automation")
+try {
+    admin.initializeApp();
+} catch (e) {
+    // Safely ignore the error if the app is already initialized.
+    if (!/already exists/.test(e.message)) {
+        console.error("Firebase Admin SDK Initialization Error:", e);
+        throw e;
+    }
+}
 
 const token = process.env.token
 const bot_id = process.env.bot_id
@@ -21,6 +28,7 @@ const client = new Discord.Client({
 
 client.commands = new Discord.Collection()
 client.commandArray = []
+
 
 const functionFolders = fs.readdirSync('./functions')
 for (const folder of functionFolders) {

@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, PermissionFlagsBits, } = require('discord.js')
-require('../../functions/dynamodb/addChannel')
+require('../../functions/firestore/addChannel')
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('setchannel')
