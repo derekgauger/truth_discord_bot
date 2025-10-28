@@ -1,8 +1,6 @@
-import pandas as pd
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
-from datetime import datetime
 import os 
 from dotenv import load_dotenv 
 import boto3 
