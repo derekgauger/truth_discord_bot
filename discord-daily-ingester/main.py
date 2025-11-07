@@ -85,7 +85,7 @@ def scrape_text_by_element_and_class(
     return text_list
 
 
-def get_national_days_with_fallback(days_url1, days_url2):
+def get_national_days_with_fallback(days_url1, days_url2, days_url3):
     """
     Tries to get national days from National Today using multiple URLs and class names.
     Returns a list of national days or an empty list if all attempts fail.
@@ -107,6 +107,14 @@ def get_national_days_with_fallback(days_url1, days_url2):
         )
         if national_days:
             return national_days
+        
+    days_html_content3 = get_html_content(days_url3)
+    if days_html_content3:
+        national_days = scrape_text_by_element_and_class(
+            days_html_content3, DAYS_ELEM_TYPE, DAYS_CLASS, True
+        )
+        if national_days:
+            return national_days
 
     # Attempt 3: Specific date URL with second class (if content available)
     if days_html_content:
@@ -120,6 +128,13 @@ def get_national_days_with_fallback(days_url1, days_url2):
     if days_html_content2:
         national_days = scrape_text_by_element_and_class(
             days_html_content2, DAYS_ELEM_TYPE, DAYS_CLASS2, True
+        )
+        if national_days:
+            return national_days
+        
+    if days_html_content3:
+        national_days = scrape_text_by_element_and_class(
+            days_html_content3, DAYS_ELEM_TYPE, DAYS_CLASS2, True
         )
         if national_days:
             return national_days
@@ -207,11 +222,12 @@ def ingest_single_day_content(db, target_date):
 
     # --- 2. Fetch National Days (Web Scraping) ---
     days_url1 = f"https://nationaltoday.com/{month_name}-{day}/"
-    days_url2 = "https://nationaltoday.com/today/"
-    print(f"Attempting to scrape national days from {days_url1} and {days_url2}...")
+    days_url2 = f"https://nationaltoday.com/{month_name}-{int(day)}/"
+    days_url3 = "https://nationaltoday.com/today/"
+    print(f"Attempting to scrape national days from {days_url1} and {days_url2} and {days_url3}...")
 
     try:
-        national_days_list = get_national_days_with_fallback(days_url1, days_url2)
+        national_days_list = get_national_days_with_fallback(days_url1, days_url2, days_url3)
         print(f"Successfully scraped {len(national_days_list)} national days.")
     except Exception as e:
         print(f"An error occurred during national days scraping: {e}")

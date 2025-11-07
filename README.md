@@ -27,3 +27,22 @@ Truth is running on an AWS EC2 instance using PM2. I ran into the issue of havin
 
 
 **If there are issues please message me on Discord at Dirk#8540 or gaugerderek@gmail.com**
+
+# Running Functions
+functions-framework --target ingest_daily_content --port 8080
+
+# GCloud Commands
+gcloud config set project truth-discord-bot
+curl http://localhost:8080
+
+
+# Run the SQL proxy to connect locally
+Remove-Item Env:\GOOGLE_APPLICATION_CREDENTIALS
+$env:GOOGLE_APPLICATION_CREDENTIALS
+gcloud auth application-default login
+
+# Also using the cloud proxy connections to connect cloud run -> cloud sql
+Using private IPs and the default network for cloud sql
+
+# Adding credentials
+Temp: $env:GOOGLE_APPLICATION_CREDENTIALS="C:\\Users\\Derek\\Keys\\truth-key.json"
